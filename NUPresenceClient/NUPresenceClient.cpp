@@ -90,6 +90,7 @@ int main()
 	//TODO
 	std::string multicastGroup = "239.226.152.162";
 	uint16_t multicastPort = 7447;
+	std::string myName = "NUPresence Client";
 
 	//SET UP NETWORKING
 	WSADATA wsaData;   
@@ -102,7 +103,8 @@ int main()
 	int udpfd = createUDPSocket("0.0.0.0", 0, false); //"0.0.0.0" ~= INADDR_ANY
 	int mcudpfd = createUDPSocket(multicastGroup, multicastPort, true);
 	
-	while (true) {
+	bool connected = false;
+	while (!connected) {
 		std::cout << "Waiting for packet.." << std::endl;
 		char buff[1500];
 		sockaddr_in remote;
@@ -120,11 +122,43 @@ int main()
 
 			std::cout << "ANNOUNCE: UDP = " << udpPort << " TCP = " << tcpPort << " name = " << name << std::endl;
 
-			if(remote.sin_port == udpPort){
+			if(ntohs(remote.sin_port) == udpPort){
 				std::cout << "Ports match. Joining.." << std::endl;
 
 				int tcpfd = createTCPSocket(ntohl(remote.sin_addr.s_addr), tcpPort);
+
+				sockaddr_in addr;
+				int len = sizeof(sockaddr_in);
+                if (::getsockname(tcpfd, reinterpret_cast<sockaddr*>(&addr), &len) == -1) {
+                    throw std::system_error(WSAGetLastError(), std::system_category(), "We were unable to get the port from the TCP socket");
+                }
+                uint16_t myTcpPort = ntohs(addr.sin_port);
+
+
+				len = sizeof(sockaddr_in);
+                if (::getsockname(udpfd, reinterpret_cast<sockaddr*>(&addr), &len) == -1) {
+                    throw std::system_error(WSAGetLastError(), std::system_category(), "We were unable to get the port from the UDP socket");
+                }
+                uint16_t myUdpPort = ntohs(addr.sin_port);
+
+
+				std::vector<char> announcePacket(13 + myName.size() + 1 );
+				announcePacket[0] = 0xE2;
+				announcePacket[1] = 0x98;
+				announcePacket[2] = 0xA2;
+				announcePacket[3] = 0x01;
+				announcePacket[4] = 1;
+				*reinterpret_cast<uint32_t*>(announcePacket.data() + 5) = 4 + myName.size() + 1;
+				*reinterpret_cast<uint16_t*>(announcePacket.data() + 9) = myTcpPort;
+				*reinterpret_cast<uint16_t*>(announcePacket.data() + 11) = myUdpPort;
+				std::memcpy(announcePacket.data() + 13, myName.c_str(), myName.size() + 1);
+
+				send(tcpfd, announcePacket.data(), announcePacket.size(),0);
+
+				connected = true;
 			}
+				
+			
 		}
 
 	}
