@@ -62,14 +62,14 @@ int main()
 		std::cout <<  e.what() << std::endl;
 	}
 	
-	char buf[1500];
 	while (true) {
+		std::cout << "Waiting for packet.." << std::endl;
+		char buf[1500];
 		sockaddr_in remote;
 		int fromlen = sizeof(sockaddr);
 		int len = recvfrom(fd, buf, sizeof(buf), 0, reinterpret_cast<sockaddr*>(&remote), &fromlen);
 		std::cout << "Received data with length = " << len << "Bytes content = " << std::endl;
 	}
-	delete[] buf;
 
 	std::cout << "hello world" << std::endl;
 	
