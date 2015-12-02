@@ -6,7 +6,7 @@
 #include <vector>
 #include <string>
 
-
+#include <OVR_CAPI.h>
 
 
 int createTCPSocket(uint32_t ip, uint16_t port){
@@ -84,6 +84,12 @@ int createUDPSocket(std::string group, uint16_t port, bool multicast){
 
 int main()
 {
+    ovrHmd HMD;
+	ovrGraphicsLuid luid;
+
+	ovrResult result = ovr_Create(&HMD, &luid);
+    ovr_Destroy(HMD);
+	
 	//TODO
 	std::string multicastGroup = "239.226.152.162";
 	uint16_t multicastPort = 7447;

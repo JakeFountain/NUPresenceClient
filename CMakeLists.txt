@@ -17,9 +17,12 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 # Useful for displaying errors, warnings, and debugging
 message ("cxx Flags: " ${CMAKE_CXX_FLAGS})
 
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules")
+
+find_package(OculusSDK REQUIRED)
 
 add_executable(client src/NUPresenceClient.cpp)
 
-if(WIN32)
-	target_link_libraries(client wsock32 ws2_32)
-endif()
+
+include_directories(${OCULUS_SDK_INCLUDE_DIRS} SYSTEM)
+target_link_libraries(client wsock32 ws2_32 ${OCULUS_SDK_LIBRARIES})
