@@ -1,7 +1,6 @@
 // NUPresenceClient.cpp : Defines the entry point for the console application.
 //
 
-#include "stdafx.h"
 #include <iostream>
 #include <winsock.h>
 #include <vector>
@@ -78,8 +77,6 @@ int createUDPSocket(std::string group, uint16_t port, bool multicast){
 			throw std::system_error(WSAGetLastError(), std::system_category(), "There was an error while attemping to join the multicast group");
 		}
 	}
-
-	
 
 	return fd;
 	
