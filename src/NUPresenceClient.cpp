@@ -7,6 +7,7 @@
 #include <string>
 
 #include <OVR_CAPI.h>
+#include <oglplus/all.h>
 
 
 int createTCPSocket(uint32_t ip, uint16_t port){
@@ -89,7 +90,7 @@ int main()
 
 	ovrResult result = ovr_Create(&HMD, &luid);
     ovr_Destroy(HMD);
-	
+
 	//TODO
 	std::string multicastGroup = "239.226.152.162";
 	uint16_t multicastPort = 7447;

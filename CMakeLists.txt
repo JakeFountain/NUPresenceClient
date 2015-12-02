@@ -25,4 +25,6 @@ add_executable(client src/NUPresenceClient.cpp)
 
 
 include_directories(${OCULUS_SDK_INCLUDE_DIRS} SYSTEM)
+include_directories("C:/Users/NUbots/Downloads/oglplus-0.67.0/include" SYSTEM)
+
 target_link_libraries(client wsock32 ws2_32 ${OCULUS_SDK_LIBRARIES})
