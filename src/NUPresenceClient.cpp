@@ -2,12 +2,14 @@
 //
 
 #include <iostream>
-#include <winsock.h>
+#include <Winsock2.h>
+#include <Ws2tcpip.h>
 #include <vector>
+#include <thread>
 #include <string>
+#include <system_error>
 
 #include <OVR_CAPI.h>
-#include <oglplus/all.h>
 
 
 int createTCPSocket(uint32_t ip, uint16_t port){
@@ -83,14 +85,52 @@ int createUDPSocket(std::string group, uint16_t port, bool multicast){
 	
 }
 
-int main()
-{
+void riftThreadMain(){
+    
+    ovrResult initResult = ovr_Initialize(nullptr);
+	if (!OVR_SUCCESS(initResult)) {
+		std::cout << "Failed to Init" << std::endl;
+		std::cout << initResult << std::endl;
+		return;
+	}
+
     ovrHmd HMD;
 	ovrGraphicsLuid luid;
+    ovrResult result = ovr_Create(&HMD, &luid);
+	if (!OVR_SUCCESS(result)) {
+		std::cout << "Rift not found!" << std::endl;
+		std::cout << result << std::endl;
+		return;
+	}
 
-	ovrResult result = ovr_Create(&HMD, &luid);
+    ovrHmdDesc hmdDesc = ovr_GetHmdDesc(HMD);
+	
+	// Main loop
+	bool running = true; 
+    while (running)
+    {
+
+        double           ftiming = ovr_GetPredictedDisplayTime(HMD, 0);
+        // Keeping sensorSampleTime as close to ovr_GetTrackingState as possible - fed into the layer
+        ovrTrackingState hmdState = ovr_GetTrackingState(HMD, ftiming, ovrTrue);
+
+		std::cout << "hmdState.HeadPose.ThePose = "
+			<< hmdState.HeadPose.ThePose.Orientation.w << " "
+			<< hmdState.HeadPose.ThePose.Orientation.x << " "
+			<< hmdState.HeadPose.ThePose.Orientation.y << " "
+			<< hmdState.HeadPose.ThePose.Orientation.z << " "
+			<< hmdState.HeadPose.ThePose.Position.x << " "
+			<< hmdState.HeadPose.ThePose.Position.y << " "
+			<< hmdState.HeadPose.ThePose.Position.z << " " << std::endl;
+    }
+
     ovr_Destroy(HMD);
 
+}
+
+int main()
+{
+	std::thread riftThread(riftThreadMain);
 	//TODO
 	std::string multicastGroup = "239.226.152.162";
 	uint16_t multicastPort = 7447;
@@ -155,14 +195,12 @@ int main()
 				*reinterpret_cast<uint32_t*>(announcePacket.data() + 5) = 4 + myName.size() + 1;
 				*reinterpret_cast<uint16_t*>(announcePacket.data() + 9) = myTcpPort;
 				*reinterpret_cast<uint16_t*>(announcePacket.data() + 11) = myUdpPort;
-				std::memcpy(announcePacket.data() + 13, myName.c_str(), myName.size() + 1);
+				memcpy(announcePacket.data() + 13, myName.c_str(), myName.size() + 1);
 
 				send(tcpfd, announcePacket.data(), announcePacket.size(),0);
 
 				connected = true;
 			}
-				
-			
 		}
 
 	}
@@ -174,4 +212,3 @@ int main()
 	WSACleanup();
     return 1;
 }
-
