@@ -20,11 +20,17 @@ message ("cxx Flags: " ${CMAKE_CXX_FLAGS})
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules")
 
 find_package(OculusSDK REQUIRED)
+find_package(GLEW REQUIRED)
+find_package(GLFW REQUIRED)
 
 add_executable(client src/NUPresenceClient.cpp)
 
 
 include_directories(${OCULUS_SDK_INCLUDE_DIRS} SYSTEM)
+include_directories(${GLEW_INCLUDE_DIRS} SYSTEM)
 include_directories("C:/Users/NUbots/Downloads/oglplus-0.67.0/include" SYSTEM)
 
-target_link_libraries(client wsock32 ws2_32 ${OCULUS_SDK_LIBRARIES})
+target_link_libraries(client wsock32 ws2_32 
+	${OCULUS_SDK_LIBRARIES}
+	${GLEW_SDK_LIBRARIES}
+	)
