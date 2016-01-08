@@ -9,10 +9,9 @@
 #include <string>
 #include <system_error>
 
-#include <OVR_CAPI.h>
-
 #include <GL/OOGL.hpp>
 
+#include "OVRManager.h"
 
 int createTCPSocket(uint32_t ip, uint16_t port){
 
@@ -93,43 +92,13 @@ void riftThreadMain(){
     GL::Window window(800,600,"Visualisation Window", GL::WindowStyle::Close);
     GL::Context& gl = window.GetContext();
 
-    ovrResult initResult = ovr_Initialize(nullptr);
-	if (!OVR_SUCCESS(initResult)) {
-		std::cout << "Failed to Init" << std::endl;
-		std::cout << initResult << std::endl;
-		riftPresent = false;
-	}
+	OVRManager ovrManager;
 
-    ovrHmd HMD;
-	ovrGraphicsLuid luid;
-    ovrResult result = ovr_Create(&HMD, &luid);
-	if (!OVR_SUCCESS(result)) {
-		std::cout << "Rift not found!" << std::endl;
-		std::cout << result << std::endl;
-		riftPresent = false;
-	}
-
-    if(riftPresent) ovrHmdDesc hmdDesc = ovr_GetHmdDesc(HMD);
-	
 	// Main loop
 	bool running = true; 
     while (running)
     {
-    	if(riftPresent){
-	        double           ftiming = ovr_GetPredictedDisplayTime(HMD, 0);
-	        // Keeping sensorSampleTime as close to ovr_GetTrackingState as possible - fed into the layer
-	        ovrTrackingState hmdState = ovr_GetTrackingState(HMD, ftiming, ovrTrue);
-
-			std::cout << "hmdState.HeadPose.ThePose = "
-				<< hmdState.HeadPose.ThePose.Orientation.w << " "
-				<< hmdState.HeadPose.ThePose.Orientation.x << " "
-				<< hmdState.HeadPose.ThePose.Orientation.y << " "
-				<< hmdState.HeadPose.ThePose.Orientation.z << " "
-				<< hmdState.HeadPose.ThePose.Position.x << " "
-				<< hmdState.HeadPose.ThePose.Position.y << " "
-				<< hmdState.HeadPose.ThePose.Position.z << " " << std::endl;
-
-    	}
+		ovrManager.printCurrentPose();
     	
 	    GL::Shader vert(GL::ShaderType::Vertex, "#version 150\nin vec2 position; void main() { gl_Position = vec4(position, 0.0, 1.0); }");
 	    GL::Shader frag(GL::ShaderType::Fragment, "#version 150\nout vec4 outColor; void main() { outColor = vec4(1.0, 0.0, 0.0, 1.0); }");
@@ -158,8 +127,6 @@ void riftThreadMain(){
 	    }
 
     }
-
-    ovr_Destroy(HMD);
 
 }
 

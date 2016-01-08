@@ -24,8 +24,7 @@ find_package(GLEW REQUIRED)
 find_package(GLFW REQUIRED)
 find_package(OOGL REQUIRED)
 
-add_executable(client src/NUPresenceClient.cpp)
-
+add_executable(client src/NUPresenceClient.cpp src/OVRManager.cpp)
 
 include_directories(${OCULUS_SDK_INCLUDE_DIRS} SYSTEM)
 include_directories(${GLEW_INCLUDE_DIRS} SYSTEM)
