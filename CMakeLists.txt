@@ -25,8 +25,7 @@ find_package(GLFW REQUIRED)
 find_package(OOGL REQUIRED)
 
 file(GLOB SRC_FILES src/*.cpp)
-message("SRC_FILES = " SRC_FILES)
-add_executable(client SRC_FILES)
+add_executable(client ${SRC_FILES})
 
 include_directories(${OCULUS_SDK_INCLUDE_DIRS} SYSTEM)
 include_directories(${GLEW_INCLUDE_DIRS} SYSTEM)

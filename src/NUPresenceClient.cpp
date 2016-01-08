@@ -9,7 +9,6 @@
 #include <string>
 #include <system_error>
 
-#include <GL/OOGL.hpp>
 
 #include "Renderer.h"
 
