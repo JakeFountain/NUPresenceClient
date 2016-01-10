@@ -1,39 +1,36 @@
-cmake_minimum_required (VERSION 2.6)
+CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
 
-# Maps to a solution file (Tutorial.sln). The solution will 
+# Maps to a solution file (Tutorial.sln). The solution will
 # have all targets (exe, lib, dll) as projects (.vcproj)
-project (NUPresenceClient)
+PROJECT(NUPresenceClient)
 
 # Turn on the ability to create folders to organize projects (.vcproj)
 # It creates "CMakePredefinedTargets" folder by default and adds CMake
 # defined projects like INSTALL.vcproj and ZERO_CHECK.vcproj
-set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS ON)
 
-# Set compiler flags and options. 
-# Here it is setting the Visual Studio warning level to 4
-# set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")
+# We use additional modules that cmake needs to know about
+SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
-# Command to output information to the console
-# Useful for displaying errors, warnings, and debugging
-message ("cxx Flags: " ${CMAKE_CXX_FLAGS})
+# Find some shared packages we need
+FIND_PACKAGE(OculusSDK REQUIRED)
+FIND_PACKAGE(GLEW REQUIRED)
+FIND_PACKAGE(GLFW REQUIRED)
+FIND_PACKAGE(OOGL REQUIRED)
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules")
+# Set include directories and libraries:
+INCLUDE_DIRECTORIES(SYSTEM ${OCULUS_SDK_INCLUDE_DIRS})
+INCLUDE_DIRECTORIES(SYSTEM ${GLEW_INCLUDE_DIRS})
+INCLUDE_DIRECTORIES(SYSTEM ${OOGL_INCLUDE_DIR})
 
-find_package(OculusSDK REQUIRED)
-find_package(GLEW REQUIRED)
-find_package(GLFW REQUIRED)
-find_package(OOGL REQUIRED)
+SET(NUCLEAR_ADDITIONAL_SHARED_LIBRARIES
+    ${OCULUS_SDK_LIBRARIES}
+    ${GLEW_SDK_LIBRARIES}
+    ${OOGL_LIBRARY}
+)
 
-file(GLOB SRC_FILES src/*.cpp)
-add_executable(client ${SRC_FILES})
+# Initialise NUClear
+ADD_SUBDIRECTORY(nuclear)
 
-include_directories(${OCULUS_SDK_INCLUDE_DIRS} SYSTEM)
-include_directories(${GLEW_INCLUDE_DIRS} SYSTEM)
-include_directories(${OOGL_INCLUDE_DIR} SYSTEM)
-include_directories("C:/Users/NUbots/Downloads/oglplus-0.67.0/include" SYSTEM)
-
-target_link_libraries(client wsock32 ws2_32 
-	${OCULUS_SDK_LIBRARIES}
-	${GLEW_SDK_LIBRARIES}
-	${OOGL_LIBRARY}
-	)
+# file(GLOB SRC_FILES src/*.cpp)
+# add_executable(client ${SRC_FILES})
