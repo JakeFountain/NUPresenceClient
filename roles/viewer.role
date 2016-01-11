@@ -1,0 +1,3 @@
+NUCLEAR_ROLE(
+	visualisation::OculusViewer
+)

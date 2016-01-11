@@ -39,8 +39,8 @@ include_directories(${OCULUS_SDK_INCLUDE_DIRS} SYSTEM)
 include_directories(${GLEW_INCLUDE_DIRS} SYSTEM)
 include_directories(${OOGL_INCLUDE_DIR} SYSTEM)
 
-target_link_libraries(client wsock32 ws2_32 
-	${OCULUS_SDK_LIBRARIES}
-	${GLEW_SDK_LIBRARIES}
-	${OOGL_LIBRARY}
-	)
+# target_link_libraries(client wsock32 ws2_32 
+# 	${OCULUS_SDK_LIBRARIES}
+# 	${GLEW_SDK_LIBRARIES}
+# 	${OOGL_LIBRARY}
+# 	)

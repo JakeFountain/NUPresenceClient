@@ -54,7 +54,7 @@ find_path( OOGL_INCLUDE_DIR
 
 find_library( OOGL_LIBRARY 
     NAMES
-        OOGL-d
+        OOGL
     HINTS
         "${OOGL_LOCATION}/lib"
         "${OOGL_LOCATION}/lib/x64"

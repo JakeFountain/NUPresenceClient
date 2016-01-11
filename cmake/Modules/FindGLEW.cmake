@@ -66,6 +66,7 @@ if (WIN32)
               glew GLEW glew32s glew32
           PATHS
               ${GLEW_LOCATION}/lib/x64
+              ${GLEW_LOCATION}/lib/Release
               ${GLEW_LOCATION}/lib/Release/x64
               ${GLEW_LOCATION}/lib/Release MX/x64
               $ENV{GLEW_LOCATION}/lib/x64
