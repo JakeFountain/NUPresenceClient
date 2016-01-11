@@ -4,6 +4,7 @@
 #include "Scene.h"
 #include <GL/OOGL.hpp>
 #include <iostream>
+#include <memory>
 
 #ifndef NUPRESENCE_RENDERER
 #define NUPRESENCE_RENDERER
@@ -13,13 +14,15 @@ public:
     Renderer();
     void render();
 private:
+	std::unique_ptr<GL::Window> window;
+
 	float width = 800;
 	float height = 600;
 	OVRManager ovrManager;
-	GL::Window window;
 
-	Scene scene;
+	std::unique_ptr<Scene> scene;
 
 };
 
 #endif
+	
