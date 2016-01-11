@@ -22,6 +22,8 @@
 
 #include <nuclear>
 
+#include "Renderer.h"
+
 namespace module {
 namespace visualisation {
 
@@ -29,7 +31,9 @@ namespace visualisation {
 
     public:
         /// @brief Called by the powerplant to build and setup the OculusViewer reactor.
-        explicit OculusViewer(std::unique_ptr<NUClear::Environment> environment);
+        explicit OculusViewer(std::unique_ptr<NUClear::Environment> environment); 
+
+		Renderer renderer;
     };
 
 }

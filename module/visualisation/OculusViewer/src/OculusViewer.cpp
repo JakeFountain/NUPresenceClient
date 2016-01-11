@@ -19,6 +19,8 @@
 
 #include "OculusViewer.h"
 
+
+
 // #include "extension/Configuration.h"
 
 namespace module {
@@ -32,6 +34,11 @@ namespace visualisation {
         // on<Configuration>("OculusViewer.yaml").then([this] (const Configuration& config) {
         //     // Use configuration here from file OculusViewer.yaml
         // });
+
+		on<Always>().then([this] {
+			renderer.render();
+		});
+
     }
 }
 }

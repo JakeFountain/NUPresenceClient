@@ -12,32 +12,12 @@ SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS ON)
 # We use additional modules that cmake needs to know about
 SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
-# Find some shared packages we need
-FIND_PACKAGE(OculusSDK REQUIRED)
-FIND_PACKAGE(GLEW REQUIRED)
-FIND_PACKAGE(GLFW REQUIRED)
-FIND_PACKAGE(OOGL REQUIRED)
-
-# Set include directories and libraries:
-INCLUDE_DIRECTORIES(SYSTEM ${OCULUS_SDK_INCLUDE_DIRS})
-INCLUDE_DIRECTORIES(SYSTEM ${GLEW_INCLUDE_DIRS})
-INCLUDE_DIRECTORIES(SYSTEM ${OOGL_INCLUDE_DIR})
-
-SET(NUCLEAR_ADDITIONAL_SHARED_LIBRARIES
-    ${OCULUS_SDK_LIBRARIES}
-    ${GLEW_SDK_LIBRARIES}
-    ${OOGL_LIBRARY}
-)
 
 # Initialise NUClear
 ADD_SUBDIRECTORY(nuclear)
 
 # file(GLOB SRC_FILES src/*.cpp)
 # add_executable(client ${SRC_FILES})
-
-include_directories(${OCULUS_SDK_INCLUDE_DIRS} SYSTEM)
-include_directories(${GLEW_INCLUDE_DIRS} SYSTEM)
-include_directories(${OOGL_INCLUDE_DIR} SYSTEM)
 
 # target_link_libraries(client wsock32 ws2_32 
 # 	${OCULUS_SDK_LIBRARIES}
