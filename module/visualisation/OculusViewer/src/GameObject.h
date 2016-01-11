@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include "RenderMesh.h"
 
 
 #ifndef NUPRESENCE_GAME_OBJECT_H
@@ -12,14 +13,14 @@
 class GameObject {
 public:
 	std::vector<GameObject> children;
-	std::vector<GL::Mesh> meshes;
+	std::vector<RenderMesh> meshes;
 	// std::vector<Light> lights;
 	GL::Mat4 transform;
 
 	GameObject(GL::Mat4 t = GL::Mat4()) : transform(t){};	
 	~GameObject(){};	
 	
-	void addMesh(const Mesh& mesh){
+	void addMesh(const RenderMesh& mesh){
 		meshes.push_back(mesh);
 	}
 	
@@ -31,20 +32,15 @@ public:
 	// 	lights.push_back(light);
 	// }
 
-
-	void renderMesh(GL::Mesh& mesh, GL::Mat4 modelview, GL::Mat4 projection, GL::Program& shader){
-		
-	}
-
-	void render(GL::Mat4 prevModel, GL::Mat4 view, GL::Mat4 projection/*, std::vector<Light>& outLights*/, GL::Program& shader){
+	void render(GL::Context& gl, GL::Mat4 prevModel, GL::Mat4 view, GL::Mat4 projection/*, std::vector<Light>& outLights*/, GL::Program& shader){
 		GL::Mat4 model = prevModel * transform;
 		GL::Mat4 modelview = view * model;
 		for(auto& child : children){
-			child.render(model, view, projection, outLights, shader);
+			child.render(gl, model, view, projection, shader);
 		}
 
 		for(auto& mesh : meshes){
-			renderMesh(mesh, modelview, projection, shader);
+			mesh.render(gl, modelview, projection, shader);
 		}
 
 		// for(auto& light : lights){

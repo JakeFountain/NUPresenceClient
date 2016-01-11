@@ -20,8 +20,33 @@ void Renderer::render(){
 	// Main loop
 	ovrManager.printCurrentPose();
 	
-	GL::Shader vert(GL::ShaderType::Vertex, "#version 150\nin vec2 position; void main() { gl_Position = vec4(position, 0.0, 1.0); }");
-	GL::Shader frag(GL::ShaderType::Fragment, "#version 150\nout vec4 outColor; void main() { outColor = vec4(1.0, 0.0, 0.0, 1.0); }");
+	GL::Shader vert(GL::ShaderType::Vertex, GLSL(
+		in vec3 pos;
+		in vec3 normal;
+		in vec2 texcoord;
+		out vec3 Pos;
+		out vec3 Normal;
+		out vec2 Texcoord;
+		uniform mat4 modelview;
+		uniform mat4 projection;
+		void main() {
+			Pos = modelview * pos;
+			Normal = modelview * normal;
+			Texcoord = texcoord;
+			gl_Position = projection * modelview * vec4( pos, 1.0 );
+		}
+	));
+
+	GL::Shader frag(GL::ShaderType::Fragment, GLSL(
+		in vec3 Pos;
+		in vec3 Normal;
+		in vec2 Texcoord;
+		out vec4 outColor;
+		uniform sampler2D texture;
+		void main() {
+			outColor = texture(texture,Texcoord);
+		}
+	));
 	GL::Program program(vert, frag);
 
 	GL::Event ev;

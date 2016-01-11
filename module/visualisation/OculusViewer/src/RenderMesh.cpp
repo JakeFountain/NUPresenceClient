@@ -1,0 +1,28 @@
+
+#include "RenderMesh.h"
+
+RenderMesh::RenderMesh(std::string modelName, std::string textureName) :
+	image(textureName.c_str()), 
+	texture(image),
+	mesh(modelName.c_str()),
+	vBuffer( mesh, GL::BufferUsage::StaticDraw, [] ( const GL::Vertex& v, GL::VertexDataBuffer& data )
+	{
+		data.Vec3( v.Pos );
+		data.Vec3( v.Normal );
+		data.Vec2( v.Tex );
+	} )
+	{}
+
+
+void RenderMesh::render(GL::Context& gl, GL::Mat4 modelview, GL::Mat4 projection, GL::Program shader) {
+	vao.BindAttribute(shader.GetAttribute( "pos" ), vBuffer, GL::Type::Float, 3, sizeof(float) * 8, 0 );
+	vao.BindAttribute(shader.GetAttribute( "normal" ), vBuffer, GL::Type::Float, 3, sizeof(float) * 8, sizeof(float) * 3 );
+	vao.BindAttribute(shader.GetAttribute( "texcoord" ), vBuffer, GL::Type::Float, 2, sizeof(float) * 8, sizeof(float) * 6 );
+	shader.SetUniform("modelview", modelview);
+	shader.SetUniform("projection", projection);
+	shader.SetUniform("texture", texture);
+
+	gl.UseProgram(shader);
+	gl.DrawArrays( vao, GL::Primitive::Triangles, 0, mesh.VertexCount() );
+
+}

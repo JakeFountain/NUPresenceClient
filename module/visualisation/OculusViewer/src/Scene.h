@@ -1,7 +1,7 @@
 
-
 #include <GL/OOGL.hpp>
 #include <iostream>
+#include "GameObject.h"
 
 #ifndef NUPRESENCE_SCENE
 #define NUPRESENCE_SCENE
@@ -12,8 +12,7 @@ public:
 
     void render(GL::Context& glContext, GL::Program& shaderProgram);
 private:
-	GL::VertexBuffer vbo;
-	GL::VertexArray vao;
+	GameObject rootObject;
 };
 
 #endif
