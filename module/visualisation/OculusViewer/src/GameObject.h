@@ -20,11 +20,11 @@ public:
 	GameObject(GL::Mat4 t = GL::Mat4()) : transform(t){};	
 	~GameObject(){};	
 	
-	void addMesh(const RenderMesh& mesh){
+	void addMesh(RenderMesh& mesh){
 		meshes.push_back(mesh);
 	}
 	
-	void addChild(const GameObject& child){
+	void addChild(GameObject& child){
 		children.push_back(child);
 	}
 

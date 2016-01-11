@@ -33,7 +33,7 @@ void Renderer::render(){
 			Pos = modelview * pos;
 			Normal = modelview * normal;
 			Texcoord = texcoord;
-			gl_Position = projection * modelview * vec4( pos, 1.0 );
+			gl_Position =  projection * modelview * vec4(pos, 1.0);
 		}
 	));
 
@@ -44,7 +44,7 @@ void Renderer::render(){
 		out vec4 outColor;
 		uniform sampler2D texture;
 		void main() {
-			outColor = texture(texture,Texcoord);
+			outColor = vec4(1, 1, 1, 1);// texture(texture,Texcoord);
 		}
 	));
 	GL::Program program(vert, frag);

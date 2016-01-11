@@ -1,6 +1,12 @@
 
 #include "RenderMesh.h"
 
+RenderMesh::RenderMesh(const RenderMesh& m) : mesh(m.mesh), texture(m.texture), image() {
+	vao = m.vao;
+	vBuffer = m.vBuffer;
+}
+
+
 RenderMesh::RenderMesh(std::string modelName, std::string textureName) :
 	image(textureName.c_str()), 
 	texture(image),
@@ -14,13 +20,14 @@ RenderMesh::RenderMesh(std::string modelName, std::string textureName) :
 	{}
 
 
-void RenderMesh::render(GL::Context& gl, GL::Mat4 modelview, GL::Mat4 projection, GL::Program shader) {
+void RenderMesh::render(GL::Context& gl, GL::Mat4 modelview, GL::Mat4 projection, GL::Program& shader) {
 	vao.BindAttribute(shader.GetAttribute( "pos" ), vBuffer, GL::Type::Float, 3, sizeof(float) * 8, 0 );
 	vao.BindAttribute(shader.GetAttribute( "normal" ), vBuffer, GL::Type::Float, 3, sizeof(float) * 8, sizeof(float) * 3 );
 	vao.BindAttribute(shader.GetAttribute( "texcoord" ), vBuffer, GL::Type::Float, 2, sizeof(float) * 8, sizeof(float) * 6 );
 	shader.SetUniform("modelview", modelview);
 	shader.SetUniform("projection", projection);
-	shader.SetUniform("texture", texture);
+	gl.BindTexture(texture, 0);
+	shader.SetUniform("texture", 0);
 
 	gl.UseProgram(shader);
 	gl.DrawArrays( vao, GL::Primitive::Triangles, 0, mesh.VertexCount() );
