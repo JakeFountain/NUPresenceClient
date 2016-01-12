@@ -81,9 +81,9 @@ ovrSizei OVRManager::getMirrorResolution(){
 }
 
 std::vector<EyePose> OVRManager::getCurrentPoses(){
+	std::vector<EyePose> eyePoses;
 	if(riftPresent){
 		//Struct to emit
-		std::vector<EyePose> eyePoses;
        	
        	// Get eye poses, feeding in correct IPD offset
         ovrVector3f               ViewOffset[2] = { EyeRenderDesc[0].HmdToEyeViewOffset,
@@ -109,15 +109,18 @@ std::vector<EyePose> OVRManager::getCurrentPoses(){
 			OVR::Matrix4f view = OVR::Matrix4f::LookAtRH(eyePos, eyePos + finalForward, finalUp);
 			OVR::Matrix4f proj = ovrMatrix4f_Projection(hmdDesc.DefaultEyeFov[eye], 0.2f, 1000.0f, ovrProjection_RightHanded);
 
+
 			GL::Mat4 glview;
 			memcpy(&(glview.m), &(view.M), 16 * sizeof(float));
 			GL::Mat4 glproj;
 			memcpy(&(glproj.m), &(proj.M), 16 * sizeof(float));
 			eyePoses.push_back({glview, glproj});
-        }
-
-		return eyePoses;
+		}
+			
+	} else {
+		std::cout << "RIFT NOT CONNECTED!!!" << std::endl;
 	}
+	return eyePoses;
 }
    
 OVRManager::~OVRManager(){

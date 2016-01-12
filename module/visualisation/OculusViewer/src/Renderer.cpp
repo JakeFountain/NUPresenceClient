@@ -76,21 +76,17 @@ void Renderer::render(float t_sec){
 		float camera_period = 10;
 		float sin = std::sin(2 * 3.14 * t_sec / camera_period);
 		float cos = std::cos(2 * 3.14 * t_sec / camera_period);
-		GL::Mat4 view = GL::Mat4::LookAt(GL::Vec3(2 * cos, 2 * sin, 1), GL::Vec3(0, 0, 0), GL::Vec3(0, 0, 1));
-		GL::Mat4 projection = GL::Mat4::Perspective(1.5, 1, 0.01, 100);
+		GL::Mat4 origin = GL::Mat4::LookAt(GL::Vec3(2 * cos, 2 * sin, 0), GL::Vec3(0, 0, 0), GL::Vec3(0, 0, 1));
 
-
-
-		glViewport(0,0,width/2,height);
-
-		scene->render(gl,*program, view, projection);
-
-
-
-		glViewport(width/2,0,width/2,height);
-
-		scene->render(gl, *program, view.Translate(GL::Vec3(0.064,0,0)), projection);
-
+		auto poses = ovrManager.getCurrentPoses();
+		
+		int eyeNumber = 0;
+		for (auto& pose : poses) {
+			GL::Mat4 view = pose.view * origin;
+			glViewport(eyeNumber * width / 2, 0, width / 2, height);
+			scene->render(gl, *program, view, pose.proj);
+			eyeNumber++;
+		}
 
         window->Present();
 
