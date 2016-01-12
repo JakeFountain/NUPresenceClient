@@ -1,12 +1,18 @@
 
-
 #include <OVR_CAPI_GL.h>
+#include "Extras/OVR_Math.h"
 #include <GL\OOGL.hpp>
 #include <iostream>
 #include <memory>
 
 #ifndef NUPRESENCE_OVR_MANAGER
 #define NUPRESENCE_OVR_MANAGER
+
+
+struct EyePose{
+	GL::Mat4 view;
+	GL::Mat4 proj;
+};
 
 class OVRManager {
 public:
@@ -15,7 +21,7 @@ public:
 
 	void OVRManager::init();
 
-    void getCurrentPose();
+	std::vector<EyePose> getCurrentPoses();
 	ovrSizei getResolution();
 	ovrSizei getMirrorResolution();
     

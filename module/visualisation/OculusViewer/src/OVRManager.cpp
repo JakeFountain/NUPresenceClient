@@ -80,21 +80,43 @@ ovrSizei OVRManager::getMirrorResolution(){
 	return { hmdDesc.Resolution.w / 2, hmdDesc.Resolution.h / 2 };
 }
 
-void OVRManager::getCurrentPose(){
+std::vector<EyePose> OVRManager::getCurrentPoses(){
 	if(riftPresent){
-        double ftiming = ovr_GetPredictedDisplayTime(session, 0);
+		//Struct to emit
+		std::vector<EyePose> eyePoses;
+       	
+       	// Get eye poses, feeding in correct IPD offset
+        ovrVector3f               ViewOffset[2] = { EyeRenderDesc[0].HmdToEyeViewOffset,
+                                                    EyeRenderDesc[1].HmdToEyeViewOffset };
+        ovrPosef                  EyeRenderPose[2];
+
+        double           ftiming = ovr_GetPredictedDisplayTime(session, 0);
         // Keeping sensorSampleTime as close to ovr_GetTrackingState as possible - fed into the layer
+        double           sensorSampleTime = ovr_GetTimeInSeconds();
         ovrTrackingState hmdState = ovr_GetTrackingState(session, ftiming, ovrTrue);
+        ovr_CalcEyePoses(hmdState.HeadPose.ThePose, ViewOffset, EyeRenderPose);
 
-		// std::cout << "hmdState.HeadPose.ThePose = "
-		// 	<< hmdState.HeadPose.ThePose.Orientation.w << " "
-		// 	<< hmdState.HeadPose.ThePose.Orientation.x << " "
-		// 	<< hmdState.HeadPose.ThePose.Orientation.y << " "
-		// 	<< hmdState.HeadPose.ThePose.Orientation.z << " "
-		// 	<< hmdState.HeadPose.ThePose.Position.x << " "
-		// 	<< hmdState.HeadPose.ThePose.Position.y << " "
-		// 	<< hmdState.HeadPose.ThePose.Position.z << " " << std::endl;
 
+		for (int eye = 0; eye < 2; ++eye)
+		{
+			// Get view and projection matrices
+			//TODO: revise once working
+			OVR::Matrix4f finalRollPitchYaw = OVR::Matrix4f(EyeRenderPose[eye].Orientation);
+			OVR::Vector3f finalUp = finalRollPitchYaw.Transform(OVR::Vector3f(0, 1, 0));
+			OVR::Vector3f finalForward = finalRollPitchYaw.Transform(OVR::Vector3f(0, 0, -1));
+			OVR::Vector3f eyePos = EyeRenderPose[eye].Position;
+
+			OVR::Matrix4f view = OVR::Matrix4f::LookAtRH(eyePos, eyePos + finalForward, finalUp);
+			OVR::Matrix4f proj = ovrMatrix4f_Projection(hmdDesc.DefaultEyeFov[eye], 0.2f, 1000.0f, ovrProjection_RightHanded);
+
+			GL::Mat4 glview;
+			memcpy(&(glview.m), &(view.M), 16 * sizeof(float));
+			GL::Mat4 glproj;
+			memcpy(&(glproj.m), &(proj.M), 16 * sizeof(float));
+			eyePoses.push_back({glview, glproj});
+        }
+
+		return eyePoses;
 	}
 }
    
