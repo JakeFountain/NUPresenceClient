@@ -15,16 +15,21 @@ OVRManager::OVRManager(){
 	}
 
 	//Init HMD
-    ovrResult result = ovr_Create(&HMD, &luid);
+    ovrResult result = ovr_Create(&session, &luid);
 	if (!OVR_SUCCESS(result)) {
 		std::cout << "Rift not found!" << std::endl;
 		std::cout << result << std::endl;
 		riftPresent = false;
+		ovr_Shutdown();
 	}
 
-    if(riftPresent) hmdDesc = ovr_GetHmdDesc(HMD);
+    if(riftPresent) {
+    	hmdDesc = ovr_GetHmdDesc(session);
+	}
+}
 
-
+ovrSizei OVRManager::getResolution(){
+	return hmdDesc.Resolution;
 }
 
 void OVRManager::printCurrentPose(){
@@ -47,4 +52,5 @@ void OVRManager::printCurrentPose(){
    
 OVRManager::~OVRManager(){
     ovr_Destroy(HMD);
+	ovr_Shutdown();
 } 

@@ -12,10 +12,11 @@ public:
     ~OVRManager();
 
     void printCurrentPose();
+	ovrSizei getResolution();
     
 private:
 	bool riftPresent;
-    ovrHmd HMD;
+    ovrSession session;
 	ovrGraphicsLuid luid;
 	ovrHmdDesc hmdDesc;
 
