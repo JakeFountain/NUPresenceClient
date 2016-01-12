@@ -20,7 +20,6 @@
 #include "OculusViewer.h"
 
 
-
 // #include "extension/Configuration.h"
 
 namespace module {
@@ -30,13 +29,16 @@ namespace visualisation {
 
     OculusViewer::OculusViewer(std::unique_ptr<NUClear::Environment> environment)
     : Reactor(std::move(environment)) {
+		start = NUClear::clock::now();
 
         // on<Configuration>("OculusViewer.yaml").then([this] (const Configuration& config) {
         //     // Use configuration here from file OculusViewer.yaml
         // });
 
 		on<Always>().then([this] {
-			renderer.render();
+			auto now = NUClear::clock::now();
+			float time_elapsed_seconds = std::chrono::duration_cast<std::chrono::microseconds>(now - start).count() / 1e6;
+			renderer.render(time_elapsed_seconds);
 		});
 
     }

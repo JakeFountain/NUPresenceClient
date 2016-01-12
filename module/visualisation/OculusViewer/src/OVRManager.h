@@ -18,6 +18,7 @@ private:
     ovrHmd HMD;
 	ovrGraphicsLuid luid;
 	ovrHmdDesc hmdDesc;
+
 };
 
 #endif

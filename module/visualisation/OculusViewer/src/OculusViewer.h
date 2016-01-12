@@ -34,6 +34,8 @@ namespace visualisation {
         explicit OculusViewer(std::unique_ptr<NUClear::Environment> environment); 
 
 		Renderer renderer;
+		NUClear::clock::time_point start;
+
     };
 
 }

@@ -88,7 +88,7 @@ int createUDPSocket(std::string group, uint16_t port, bool multicast){
 void riftThreadMain(){
 	Renderer renderer;
 
-	renderer.render();
+	//renderer.render();
 }
 
 int main()

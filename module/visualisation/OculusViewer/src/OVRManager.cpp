@@ -33,14 +33,14 @@ void OVRManager::printCurrentPose(){
         // Keeping sensorSampleTime as close to ovr_GetTrackingState as possible - fed into the layer
         ovrTrackingState hmdState = ovr_GetTrackingState(HMD, ftiming, ovrTrue);
 
-		std::cout << "hmdState.HeadPose.ThePose = "
-			<< hmdState.HeadPose.ThePose.Orientation.w << " "
-			<< hmdState.HeadPose.ThePose.Orientation.x << " "
-			<< hmdState.HeadPose.ThePose.Orientation.y << " "
-			<< hmdState.HeadPose.ThePose.Orientation.z << " "
-			<< hmdState.HeadPose.ThePose.Position.x << " "
-			<< hmdState.HeadPose.ThePose.Position.y << " "
-			<< hmdState.HeadPose.ThePose.Position.z << " " << std::endl;
+		// std::cout << "hmdState.HeadPose.ThePose = "
+		// 	<< hmdState.HeadPose.ThePose.Orientation.w << " "
+		// 	<< hmdState.HeadPose.ThePose.Orientation.x << " "
+		// 	<< hmdState.HeadPose.ThePose.Orientation.y << " "
+		// 	<< hmdState.HeadPose.ThePose.Orientation.z << " "
+		// 	<< hmdState.HeadPose.ThePose.Position.x << " "
+		// 	<< hmdState.HeadPose.ThePose.Position.y << " "
+		// 	<< hmdState.HeadPose.ThePose.Position.z << " " << std::endl;
 
 	}
 }

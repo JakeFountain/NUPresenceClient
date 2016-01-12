@@ -12,7 +12,7 @@
 class Renderer {
 public:
     Renderer();
-    void render();
+    void render(float t_sec);
 private:
 	std::unique_ptr<GL::Window> window;
 
@@ -21,6 +21,9 @@ private:
 	OVRManager ovrManager;
 
 	std::unique_ptr<Scene> scene;
+	std::unique_ptr<GL::Shader> vert;
+	std::unique_ptr<GL::Shader> frag;
+	std::unique_ptr<GL::Program> program;
 
 };
 
