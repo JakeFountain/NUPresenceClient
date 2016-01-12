@@ -107,14 +107,14 @@ std::vector<EyePose> OVRManager::getCurrentPoses(){
 			OVR::Vector3f eyePos = EyeRenderPose[eye].Position;
 
 			OVR::Matrix4f view = OVR::Matrix4f::LookAtRH(eyePos, eyePos + finalForward, finalUp);
-			OVR::Matrix4f proj = ovrMatrix4f_Projection(hmdDesc.DefaultEyeFov[eye], 0.2f, 1000.0f, ovrProjection_RightHanded);
+			OVR::Matrix4f proj = ovrMatrix4f_Projection(hmdDesc.DefaultEyeFov[eye], 0.2f, 1000000.0f, ovrProjection_RightHanded);
 
 
 			GL::Mat4 glview;
 			memcpy(&(glview.m), &(view.M), 16 * sizeof(float));
 			GL::Mat4 glproj;
 			memcpy(&(glproj.m), &(proj.M), 16 * sizeof(float));
-			eyePoses.push_back({glview, glproj});
+			eyePoses.push_back({glview.Inverse(), glproj});
 		}
 			
 	} else {

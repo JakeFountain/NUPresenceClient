@@ -40,7 +40,8 @@ void Renderer::render(float t_sec){
 			out vec4 outColor;
 			uniform sampler2D tex;
 			void main() {
-				outColor = texture(tex, vec2(Texcoord.x,1-Texcoord.y));
+				outColor = texture(tex, vec2(Texcoord.x, 1 - Texcoord.y));
+				//outColor = vec4(gl_Position.z, 0, 0, 1);
 			}
 		));
 
@@ -76,7 +77,7 @@ void Renderer::render(float t_sec){
 		float camera_period = 10;
 		float sin = std::sin(2 * 3.14 * t_sec / camera_period);
 		float cos = std::cos(2 * 3.14 * t_sec / camera_period);
-		GL::Mat4 origin = GL::Mat4::LookAt(GL::Vec3(2 * cos, 2 * sin, 0), GL::Vec3(0, 0, 0), GL::Vec3(0, 0, 1));
+		GL::Mat4 origin;//GL::Mat4::LookAt(GL::Vec3(0, 0, 0), GL::Vec3(sin, cos, 0), GL::Vec3(0, 0, 1));
 
 		auto poses = ovrManager.getCurrentPoses();
 		
