@@ -54,12 +54,14 @@ void Renderer::render(float t_sec){
 			throw e;
 		}
 
+		ovrManager.init();
+
 
 	}
 	GL::Context& gl = window->GetContext();
 
 	// Main loop
-	ovrManager.printCurrentPose();
+	//ovrManager.printCurrentPose();
 	
 
 

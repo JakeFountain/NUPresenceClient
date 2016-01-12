@@ -1,9 +1,11 @@
 
 
 #include "OVRManager.h"
+#include <algorithm>
 
+OVRManager::OVRManager(){}
 
-OVRManager::OVRManager(){
+void OVRManager::init(){
 	riftPresent = true;
    
    	//Init OVR
@@ -26,17 +28,63 @@ OVRManager::OVRManager(){
     if(riftPresent) {
     	hmdDesc = ovr_GetHmdDesc(session);
 	}
+
+	
+
+	// Make eye render buffers
+	for (int eye = 0; eye < 2; ++eye)
+	{
+		ovrSizei idealTextureSize = ovr_GetFovTextureSize(session, ovrEyeType(eye), hmdDesc.DefaultEyeFov[eye], 1);
+		
+		eyeBuffers.push_back(std::make_unique<GL::Framebuffer>(idealTextureSize.w,idealTextureSize.h));
+
+		//if (!eyeRenderTexture[eye]->TextureSet)
+		//{
+		//	if (retryCreate) goto Done;
+		//	VALIDATE(false, "Failed to create texture.");
+		//}
+	}
+
+	// Create mirror texture and an FBO used to copy mirror texture to back buffer
+	ovrSizei windowSize = getMirrorResolution();
+	mirrorBuffer = std::make_unique<GL::Framebuffer>(windowSize.w,windowSize.h);
+
+	//Oculus way:
+	// ovrTexture mirrorTexture;
+	// result = ovr_CreateMirrorTextureGL(session, GL_SRGB8_ALPHA8, windowSize.w, windowSize.h, reinterpret_cast<ovrTexture**>(&mirrorTexture));
+
+	// // Configure the mirror read buffer
+	// glGenFramebuffers(1, &mirrorFBO);
+	// glBindFramebuffer(GL_READ_FRAMEBUFFER, mirrorFBO);
+	// glFramebufferTexture2D(GL_READ_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, mirrorTexture->OGL.TexId, 0);
+	// glFramebufferRenderbuffer(GL_READ_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, 0);
+	// glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+
+
+	EyeRenderDesc[0] = ovr_GetRenderDesc(session, ovrEye_Left, hmdDesc.DefaultEyeFov[0]);
+	EyeRenderDesc[1] = ovr_GetRenderDesc(session, ovrEye_Right, hmdDesc.DefaultEyeFov[1]);
+
+	// Turn off vsync to let the compositor do its magic
+	wglSwapIntervalEXT(0);
+
 }
 
 ovrSizei OVRManager::getResolution(){
 	return hmdDesc.Resolution;
 }
 
-void OVRManager::printCurrentPose(){
+ovrSizei OVRManager::getMirrorResolution(){
+	//Configure stereo settings
+	// Setup Window and Graphics
+	// Note: the mirror window can be any size, for this sample we use 1/2 the HMD resolution
+	return { hmdDesc.Resolution.w / 2, hmdDesc.Resolution.h / 2 };
+}
+
+void OVRManager::getCurrentPose(){
 	if(riftPresent){
-        double ftiming = ovr_GetPredictedDisplayTime(HMD, 0);
+        double ftiming = ovr_GetPredictedDisplayTime(session, 0);
         // Keeping sensorSampleTime as close to ovr_GetTrackingState as possible - fed into the layer
-        ovrTrackingState hmdState = ovr_GetTrackingState(HMD, ftiming, ovrTrue);
+        ovrTrackingState hmdState = ovr_GetTrackingState(session, ftiming, ovrTrue);
 
 		// std::cout << "hmdState.HeadPose.ThePose = "
 		// 	<< hmdState.HeadPose.ThePose.Orientation.w << " "
@@ -51,6 +99,6 @@ void OVRManager::printCurrentPose(){
 }
    
 OVRManager::~OVRManager(){
-    ovr_Destroy(HMD);
+    ovr_Destroy(session);
 	ovr_Shutdown();
 } 
