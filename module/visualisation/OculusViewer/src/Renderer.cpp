@@ -11,6 +11,9 @@ Renderer::Renderer():
 void Renderer::render(float t_sec){
 	
 	if(!window){
+		auto resolution = ovrManager.getMirrorResolution();
+		width = resolution.w;
+		height = resolution.h;
 		window = std::make_unique<GL::Window>(width, height, "Visualisation Window", GL::WindowStyle::Close);
 		GL::Context& gl = window->GetContext();
 		scene = std::make_unique<Scene>();
@@ -45,11 +48,8 @@ void Renderer::render(float t_sec){
 			}
 		));
 
-		// std::cout << "Vert compile output: \n" << vert->GetInfoLog() << std::endl;
-		// std::cout << "Frag compile output: \n" << frag->GetInfoLog() << std::endl;
 		program = std::make_unique<GL::Program>(*vert, *frag);
-		// std::cout << "Link output: \n" << program->GetInfoLog() << std::endl;
-		
+
 		} catch (GL::CompileException e) {
 			std::cout << e.what() << std::endl;
 			throw e;
@@ -81,13 +81,22 @@ void Renderer::render(float t_sec){
 
 		auto poses = ovrManager.getCurrentPoses();
 		
+		//Draw eye buffers
 		int eyeNumber = 0;
 		for (auto& pose : poses) {
 			GL::Mat4 view = pose.view * origin;
-			glViewport(eyeNumber * width / 2, 0, width / 2, height);
+			ovrManager.setRenderTarget(gl, OVRManager::RenderTarget(eyeNumber));
+			if(eyeNumber == 0) gl.Clear();
 			scene->render(gl, *program, view, pose.proj);
 			eyeNumber++;
 		}
+		
+		//Draw to rift
+		ovrManager.renderToRift();
+
+		//Draw to mirror
+		//gl.BindFramebuffer(); //Bind to screen
+		//glViewport(0, 0, width, height);
 
         window->Present();
 

@@ -30,39 +30,28 @@ void OVRManager::init(){
 	}
 
 	
-
-	// Make eye render buffers
-	for (int eye = 0; eye < 2; ++eye)
-	{
-		ovrSizei idealTextureSize = ovr_GetFovTextureSize(session, ovrEyeType(eye), hmdDesc.DefaultEyeFov[eye], 1);
-		
-		eyeBuffers.push_back(std::make_unique<GL::Framebuffer>(idealTextureSize.w,idealTextureSize.h));
-
-		//if (!eyeRenderTexture[eye]->TextureSet)
-		//{
-		//	if (retryCreate) goto Done;
-		//	VALIDATE(false, "Failed to create texture.");
-		//}
-	}
-
-	// Create mirror texture and an FBO used to copy mirror texture to back buffer
-	ovrSizei windowSize = getMirrorResolution();
-	mirrorBuffer = std::make_unique<GL::Framebuffer>(windowSize.w,windowSize.h);
-
-	//Oculus way:
-	// ovrTexture mirrorTexture;
-	// result = ovr_CreateMirrorTextureGL(session, GL_SRGB8_ALPHA8, windowSize.w, windowSize.h, reinterpret_cast<ovrTexture**>(&mirrorTexture));
+	bool eyeBufferResult = createEyeBuffers();
 
 	// // Configure the mirror read buffer
-	// glGenFramebuffers(1, &mirrorFBO);
-	// glBindFramebuffer(GL_READ_FRAMEBUFFER, mirrorFBO);
-	// glFramebufferTexture2D(GL_READ_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, mirrorTexture->OGL.TexId, 0);
-	// glFramebufferRenderbuffer(GL_READ_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, 0);
-	// glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+	// // Create mirror texture and an FBO used to copy mirror texture to back buffer
+	// ovrSizei windowSize = getMirrorResolution();
+
+
+	// ovrGLTexture mirrorTexture;
+	// result = ovr_CreateMirrorTextureGL(session, GL_SRGB8_ALPHA8, windowSize.w, windowSize.h, reinterpret_cast<ovrTexture**>(&mirrorTexture));
+
+	// glGenFramebuffers(1, &mirrorBuffer);
+	// glBindFramebuffer(GL_READ_BUFFER, mirrorBuffer);
+	// glFramebufferTexture2D(GL_READ_BUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, mirrorTexture.OGL.TexId, 0);
+	// glFramebufferRenderbuffer(GL_READ_BUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, 0);
+	// glBindFramebuffer(GL_READ_BUFFER, 0);
 
 
 	EyeRenderDesc[0] = ovr_GetRenderDesc(session, ovrEye_Left, hmdDesc.DefaultEyeFov[0]);
 	EyeRenderDesc[1] = ovr_GetRenderDesc(session, ovrEye_Right, hmdDesc.DefaultEyeFov[1]);
+
+	ViewOffset[2] = { EyeRenderDesc[0].HmdToEyeViewOffset.y,
+					  EyeRenderDesc[1].HmdToEyeViewOffset.y };
 
 	// Turn off vsync to let the compositor do its magic
 	wglSwapIntervalEXT(0);
@@ -80,14 +69,52 @@ ovrSizei OVRManager::getMirrorResolution(){
 	return { hmdDesc.Resolution.w / 2, hmdDesc.Resolution.h / 2 };
 }
 
+bool OVRManager::createEyeBuffers()
+{
+	// Configure Stereo settings.
+	OVR::Sizei recommenedTex0Size = ovr_GetFovTextureSize(session, ovrEye_Left,
+		hmdDesc.DefaultEyeFov[0], 1.0f);
+	OVR::Sizei recommenedTex1Size = ovr_GetFovTextureSize(session, ovrEye_Right,
+		hmdDesc.DefaultEyeFov[1], 1.0f);
+
+	bufferSize.w = recommenedTex0Size.w + recommenedTex1Size.w;
+	bufferSize.h = max(recommenedTex0Size.h, recommenedTex1Size.h);
+
+
+	if (ovr_CreateSwapTextureSetGL(session, GL_SRGB8_ALPHA8, bufferSize.w, bufferSize.h,
+		&pTextureSet) != ovrSuccess)
+	{
+		std::cout << "OVR SWAP TEXTURE ALLOCATION FAILED" << std::endl;
+		return false;
+	}
+
+	ovrGLTexture* tex = (ovrGLTexture*)&pTextureSet->Textures[0];
+
+	eyeBuffer = std::make_unique<GL::Framebuffer>(bufferSize.w, bufferSize.h, &tex->OGL.TexId);
+	
+	return true;
+}
+
+void OVRManager::setRenderTarget(GL::Context& gl, OVRManager::RenderTarget target)
+{
+	if (target == MIRROR) {
+
+	}
+	else {
+		gl.BindFramebuffer(*eyeBuffer);
+		glViewport(bufferSize.w * int(target) / 2, 0, bufferSize.w / 2, bufferSize.h);
+	}
+}
+
 std::vector<EyePose> OVRManager::getCurrentPoses(){
 	std::vector<EyePose> eyePoses;
 	if(riftPresent){
 		//Struct to emit
        	
        	// Get eye poses, feeding in correct IPD offset
-        ovrVector3f               ViewOffset[2] = { EyeRenderDesc[0].HmdToEyeViewOffset,
-                                                    EyeRenderDesc[1].HmdToEyeViewOffset };
+		ViewOffset[0] = EyeRenderDesc[0].HmdToEyeViewOffset;
+		ViewOffset[1] = EyeRenderDesc[1].HmdToEyeViewOffset;
+
         ovrPosef                  EyeRenderPose[2];
 
         double           ftiming = ovr_GetPredictedDisplayTime(session, 0);
@@ -128,7 +155,6 @@ std::vector<EyePose> OVRManager::getCurrentPoses(){
 			memcpy(&(glview.m), &(view.M), 16 * sizeof(float));
 			GL::Mat4 glproj;
 			memcpy(&(glproj.m), &(proj.M), 16 * sizeof(float));
-			//glproj = GL::Mat4::Perspective(2, 1, 0.2, 100);
 			eyePoses.push_back({ glview.Transpose(), glproj.Transpose()});
 		}
 			
@@ -137,8 +163,36 @@ std::vector<EyePose> OVRManager::getCurrentPoses(){
 	}
 	return eyePoses;
 }
+
+bool OVRManager::renderToRift(){
+	// Create eye layer.
+	ovrLayerEyeFov eyeLayer;
+	eyeLayer.Header.Type = ovrLayerType_EyeFov;
+	eyeLayer.Header.Flags = 0;
+	for (int eye = 0; eye < 2; eye++)
+	{
+		eyeLayer.ColorTexture[eye] = pTextureSet;
+		//TODO: fix viewport
+		eyeLayer.Viewport[eye] = EyeRenderDesc[eye].DistortedViewport;
+		eyeLayer.Fov[eye] = EyeRenderDesc[eye].Fov;
+		eyeLayer.RenderPose[eye] = EyeRenderPose[eye];
+	}
+
+	// The list of layers.
+	ovrLayerHeader *layerList = &eyeLayer.Header;
+
+	// Set up positional data.
+	ovrViewScaleDesc viewScaleDesc;
+	viewScaleDesc.HmdSpaceToWorldScaleInMeters = 1.0f;
+	viewScaleDesc.HmdToEyeViewOffset[0] = ViewOffset[0];
+	viewScaleDesc.HmdToEyeViewOffset[1] = ViewOffset[1];
+
+	ovrResult result = ovr_SubmitFrame(session, 0, &viewScaleDesc, &layerList, 1);
+	return result == ovrSuccess;
+}
    
 OVRManager::~OVRManager(){
     ovr_Destroy(session);
 	ovr_Shutdown();
+	delete pTextureSet;
 } 

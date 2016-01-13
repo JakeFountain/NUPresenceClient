@@ -1,6 +1,7 @@
 
 #include <OVR_CAPI_GL.h>
 #include "Extras/OVR_Math.h"
+#include <GL\GL\Extensions.hpp>
 #include <GL\OOGL.hpp>
 #include <iostream>
 #include <memory>
@@ -16,24 +17,41 @@ struct EyePose{
 
 class OVRManager {
 public:
+	enum RenderTarget {
+		LEFT_EYE = 0,
+		RIGHT_EYE = 1,
+		MIRROR = 2
+	};
+
     OVRManager();
 	~OVRManager();
 
-	void OVRManager::init();
+	void init();
 
 	std::vector<EyePose> getCurrentPoses();
+	bool renderToRift();
 	ovrSizei getResolution();
 	ovrSizei getMirrorResolution();
-    
+
+	bool createEyeBuffers();
+
+	void setRenderTarget(GL::Context & gl, OVRManager::RenderTarget target);
+
 private:
 	bool riftPresent;
     ovrSession session;
 	ovrGraphicsLuid luid;
 	ovrHmdDesc hmdDesc;
 	ovrEyeRenderDesc EyeRenderDesc[2];
+ 	ovrVector3f ViewOffset[2];
+ 	ovrPosef EyeRenderPose[2];
+	OVR::Sizei bufferSize;
 
-	std::vector<std::unique_ptr<GL::Framebuffer>> eyeBuffers;
+ 	ovrSwapTextureSet* pTextureSet = 0;
+
+	std::unique_ptr<GL::Framebuffer> eyeBuffer;
 	std::unique_ptr<GL::Framebuffer> mirrorBuffer;
+
 
 };
 
