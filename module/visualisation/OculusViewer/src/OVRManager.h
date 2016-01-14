@@ -5,6 +5,7 @@
 #include <GL\OOGL.hpp>
 #include <iostream>
 #include <memory>
+#include "TextureToScreen.h"
 
 #ifndef NUPRESENCE_OVR_MANAGER
 #define NUPRESENCE_OVR_MANAGER
@@ -30,6 +31,7 @@ public:
 
 	std::vector<EyePose> getCurrentPoses();
 	bool renderToRift();
+	void drawMirror(GL::Context & gl);
 	ovrSizei getResolution();
 	ovrSizei getMirrorResolution();
 
@@ -52,7 +54,7 @@ private:
 	std::vector<std::unique_ptr<GL::Framebuffer>> eyeBuffer;
 	std::unique_ptr<GL::Framebuffer> mirrorBuffer;
 
-
+	std::unique_ptr<TextureToScreen> texToScreenRenderer;
 };
 
 #endif

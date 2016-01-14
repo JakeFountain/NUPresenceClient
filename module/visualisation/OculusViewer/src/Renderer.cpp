@@ -11,9 +11,8 @@ Renderer::Renderer():
 void Renderer::render(float t_sec){
 	
 	if(!window){
-		auto resolution = ovrManager.getMirrorResolution();
-		width = resolution.w;
-		height = resolution.h;
+		width = 1920;
+		height = 1080;
 		window = std::make_unique<GL::Window>(width, height, "Visualisation Window", GL::WindowStyle::Close);
 		GL::Context& gl = window->GetContext();
 		scene = std::make_unique<Scene>();
@@ -32,7 +31,7 @@ void Renderer::render(float t_sec){
 				Pos = modelview * vec4(pos,1.0);
 				Normal = modelview * vec4(normal,0.0);
 				Texcoord = texcoord;
-				gl_Position = projection * Pos;
+				gl_Position = projection * vec4(Pos.x,-Pos.y, Pos.z, 1.0);
 			}
 		));
 
@@ -77,7 +76,7 @@ void Renderer::render(float t_sec){
 		float camera_period = 10;
 		float sin = std::sin(2 * 3.14 * t_sec / camera_period);
 		float cos = std::cos(2 * 3.14 * t_sec / camera_period);
-		GL::Mat4 origin;//GL::Mat4::LookAt(GL::Vec3(0, 0, 0), GL::Vec3(sin, cos, 0), GL::Vec3(0, 0, 1));
+		GL::Mat4 origin = GL::Mat4::LookAt(GL::Vec3(0, 0, 0), GL::Vec3(sin, cos, 0), GL::Vec3(0, 0, 1));
 
 		auto poses = ovrManager.getCurrentPoses();
 		
@@ -100,7 +99,7 @@ void Renderer::render(float t_sec){
 		//Draw to mirror
 		gl.BindFramebuffer(); //Bind to screen
 		glViewport(0, 0, width, height);
-		glClear(GL_COLOR);
+		ovrManager.drawMirror(gl);
 
         window->Present();
 

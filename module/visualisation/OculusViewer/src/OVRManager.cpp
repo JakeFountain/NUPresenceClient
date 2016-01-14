@@ -41,6 +41,14 @@ bool OVRManager::init(){
 
 	// Turn off vsync to let the compositor do its magic
 	wglSwapIntervalEXT(0);
+
+	try {
+		texToScreenRenderer = std::make_unique<TextureToScreen>();
+	}
+	catch (GL::CompileException e) {
+		std::cout << e.what() << std::endl;
+		throw e;
+	}
 	
 	return eyeBufferResult;
 
@@ -192,15 +200,7 @@ bool OVRManager::renderToRift(){
 }
 
 void OVRManager::drawMirror(GL::Context& gl) {
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-	
-	auto res = getMirrorResolution();
-	GLint w = res.w;
-	GLint h = res.h;
-	glBegin(GL_TRIANGLES);
-		
-	glEnd();
-	glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+	texToScreenRenderer->renderTextureToScreen(gl, eyeBuffer[pTextureSet->CurrentIndex]->GetTexture());
 }
    
 OVRManager::~OVRManager(){
