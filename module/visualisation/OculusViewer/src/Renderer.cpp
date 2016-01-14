@@ -55,7 +55,7 @@ void Renderer::render(float t_sec){
 			throw e;
 		}
 
-		ovrManager.init();
+		bool ovrInitialiesed = ovrManager.init();
 
 
 	}
@@ -92,11 +92,15 @@ void Renderer::render(float t_sec){
 		}
 		
 		//Draw to rift
-		ovrManager.renderToRift();
+		bool renderResult = ovrManager.renderToRift();
+		if (!renderResult) {
+			std::cout << "Rift display failed!" << std::endl;
+		}
 
 		//Draw to mirror
-		//gl.BindFramebuffer(); //Bind to screen
-		//glViewport(0, 0, width, height);
+		gl.BindFramebuffer(); //Bind to screen
+		glViewport(0, 0, width, height);
+		glClear(GL_COLOR);
 
         window->Present();
 

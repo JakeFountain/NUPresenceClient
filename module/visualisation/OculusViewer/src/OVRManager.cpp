@@ -5,47 +5,33 @@
 
 OVRManager::OVRManager(){}
 
-void OVRManager::init(){
+bool OVRManager::init(){
 	riftPresent = true;
    
    	//Init OVR
     ovrResult initResult = ovr_Initialize(nullptr);
 	if (!OVR_SUCCESS(initResult)) {
-		std::cout << "Failed to Init" << std::endl;
-		std::cout << initResult << std::endl;
+		std::cout << "Failed to Init OVR" << std::endl;
+		std::cout << "Error code: " << initResult << std::endl;
 		riftPresent = false;
+		return false;
 	}
 
-	//Init HMD
+	//Init session
     ovrResult result = ovr_Create(&session, &luid);
 	if (!OVR_SUCCESS(result)) {
 		std::cout << "Rift not found!" << std::endl;
-		std::cout << result << std::endl;
+		std::cout << "Error code: " << result << std::endl;
 		riftPresent = false;
 		ovr_Shutdown();
+		return false;
 	}
 
-    if(riftPresent) {
-    	hmdDesc = ovr_GetHmdDesc(session);
-	}
+	//std::unique_ptr<ovrSession, decltype(ovr_Destroy)> thing(session, ovr_Destroy);
 
-	
+	hmdDesc = ovr_GetHmdDesc(session);
+
 	bool eyeBufferResult = createEyeBuffers();
-
-	// // Configure the mirror read buffer
-	// // Create mirror texture and an FBO used to copy mirror texture to back buffer
-	// ovrSizei windowSize = getMirrorResolution();
-
-
-	// ovrGLTexture mirrorTexture;
-	// result = ovr_CreateMirrorTextureGL(session, GL_SRGB8_ALPHA8, windowSize.w, windowSize.h, reinterpret_cast<ovrTexture**>(&mirrorTexture));
-
-	// glGenFramebuffers(1, &mirrorBuffer);
-	// glBindFramebuffer(GL_READ_BUFFER, mirrorBuffer);
-	// glFramebufferTexture2D(GL_READ_BUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, mirrorTexture.OGL.TexId, 0);
-	// glFramebufferRenderbuffer(GL_READ_BUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, 0);
-	// glBindFramebuffer(GL_READ_BUFFER, 0);
-
 
 	EyeRenderDesc[0] = ovr_GetRenderDesc(session, ovrEye_Left, hmdDesc.DefaultEyeFov[0]);
 	EyeRenderDesc[1] = ovr_GetRenderDesc(session, ovrEye_Right, hmdDesc.DefaultEyeFov[1]);
@@ -55,6 +41,8 @@ void OVRManager::init(){
 
 	// Turn off vsync to let the compositor do its magic
 	wglSwapIntervalEXT(0);
+	
+	return eyeBufferResult;
 
 }
 
@@ -87,10 +75,15 @@ bool OVRManager::createEyeBuffers()
 		std::cout << "OVR SWAP TEXTURE ALLOCATION FAILED" << std::endl;
 		return false;
 	}
+	else {
+		std::cout << "OVR SWAP TEXTURE ALLOCATION SUCCEEDED" << std::endl;
+	}
 
-	ovrGLTexture* tex = (ovrGLTexture*)&pTextureSet->Textures[0];
-
-	eyeBuffer = std::make_unique<GL::Framebuffer>(bufferSize.w, bufferSize.h, &tex->OGL.TexId);
+	for (int i = 0; i < pTextureSet->TextureCount; i++) {
+		ovrGLTexture* tex = (ovrGLTexture*)&pTextureSet->Textures[i];
+		GLuint id = tex->OGL.TexId;
+		eyeBuffer.push_back(std::make_unique<GL::Framebuffer>(bufferSize.w, bufferSize.h, &id));
+	}
 	
 	return true;
 }
@@ -101,7 +94,7 @@ void OVRManager::setRenderTarget(GL::Context& gl, OVRManager::RenderTarget targe
 
 	}
 	else {
-		gl.BindFramebuffer(*eyeBuffer);
+		gl.BindFramebuffer(*eyeBuffer[pTextureSet->CurrentIndex]);
 		glViewport(bufferSize.w * int(target) / 2, 0, bufferSize.w / 2, bufferSize.h);
 	}
 }
@@ -165,15 +158,21 @@ std::vector<EyePose> OVRManager::getCurrentPoses(){
 }
 
 bool OVRManager::renderToRift(){
+	double           ftiming = ovr_GetPredictedDisplayTime(session, 0);
+	// Keeping sensorSampleTime as close to ovr_GetTrackingState as possible - fed into the layer
+	double           sensorSampleTime = ovr_GetTimeInSeconds();
+	ovrTrackingState hmdState = ovr_GetTrackingState(session, ftiming, ovrTrue);
+	ovr_CalcEyePoses(hmdState.HeadPose.ThePose, ViewOffset, EyeRenderPose);
+
 	// Create eye layer.
 	ovrLayerEyeFov eyeLayer;
 	eyeLayer.Header.Type = ovrLayerType_EyeFov;
 	eyeLayer.Header.Flags = 0;
+
 	for (int eye = 0; eye < 2; eye++)
 	{
 		eyeLayer.ColorTexture[eye] = pTextureSet;
-		//TODO: fix viewport
-		eyeLayer.Viewport[eye] = EyeRenderDesc[eye].DistortedViewport;
+		eyeLayer.Viewport[eye] = ovrRecti{ ovrVector2i{eye * bufferSize.w / 2,0}, ovrSizei{bufferSize.w / 2,bufferSize.h}};
 		eyeLayer.Fov[eye] = EyeRenderDesc[eye].Fov;
 		eyeLayer.RenderPose[eye] = EyeRenderPose[eye];
 	}
@@ -188,7 +187,20 @@ bool OVRManager::renderToRift(){
 	viewScaleDesc.HmdToEyeViewOffset[1] = ViewOffset[1];
 
 	ovrResult result = ovr_SubmitFrame(session, 0, &viewScaleDesc, &layerList, 1);
+	pTextureSet->CurrentIndex = (pTextureSet->CurrentIndex + 1) % pTextureSet->TextureCount;
 	return result == ovrSuccess;
+}
+
+void OVRManager::drawMirror(GL::Context& gl) {
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+	
+	auto res = getMirrorResolution();
+	GLint w = res.w;
+	GLint h = res.h;
+	glBegin(GL_TRIANGLES);
+		
+	glEnd();
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
 }
    
 OVRManager::~OVRManager(){

@@ -26,7 +26,7 @@ public:
     OVRManager();
 	~OVRManager();
 
-	void init();
+	bool init();
 
 	std::vector<EyePose> getCurrentPoses();
 	bool renderToRift();
@@ -47,9 +47,9 @@ private:
  	ovrPosef EyeRenderPose[2];
 	OVR::Sizei bufferSize;
 
- 	ovrSwapTextureSet* pTextureSet = 0;
+ 	ovrSwapTextureSet* pTextureSet;
 
-	std::unique_ptr<GL::Framebuffer> eyeBuffer;
+	std::vector<std::unique_ptr<GL::Framebuffer>> eyeBuffer;
 	std::unique_ptr<GL::Framebuffer> mirrorBuffer;
 
 
