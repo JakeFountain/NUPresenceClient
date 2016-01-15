@@ -1,22 +1,22 @@
 
-#include <GL/OOGL.hpp>
+// #include <GL/glew.h>  
+// #include <oglplus/all.hpp>
 
-#ifndef NUPRESENCE_RENDER_MESH_H
-#define NUPRESENCE_RENDER_MESH_H
+// #ifndef NUPRESENCE_RENDER_MESH_H
+// #define NUPRESENCE_RENDER_MESH_H
 
-class RenderMesh {
-public:
-	RenderMesh::RenderMesh(const RenderMesh& m);
-    RenderMesh(std::string modelName, std::string textureName);
-    void render(GL::Context& gl, GL::Mat4 modelview, GL::Mat4 projection, GL::Program& shader);
-private:
-	GL::Mesh mesh;
-	GL::Texture texture;
-	GL::Image image;
-	GL::VertexArray vao;
-	GL::VertexBuffer vBuffer;
+// class RenderMesh {
+// public:
+// 	RenderMesh::RenderMesh(const RenderMesh& m);
+//     RenderMesh(std::string modelName, std::string textureName);
+//     void render(oglplus::Context& gl, oglplus::Mat4 modelview, oglplus::Mat4 projection, oglplus::Program& shader);
+// private:
+// 	oglplus::Mesh mesh;
+// 	oglplus::Texture texture;
+// 	oglplus::VertexArray vao;
+// 	oglplus::Buffer vBuffer;
 
-};
+// };
 
-#endif
-	
+// #endif
+// 	

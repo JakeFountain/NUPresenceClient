@@ -1,10 +1,13 @@
-
+#define OGLPLUS_NO_SITE_CONFIG
 
 #include "OVRManager.h"
 #include "Scene.h"
-#include <GL/OOGL.hpp>
+#include <GL/glew.h>  
+#include <oglplus/all.hpp>
+#include <GLFW/glfw3.h>
 #include <iostream>
 #include <memory>
+#include <functional>
 
 #ifndef NUPRESENCE_RENDERER
 #define NUPRESENCE_RENDERER
@@ -12,18 +15,19 @@
 class Renderer {
 public:
     Renderer();
-    void render(float t_sec);
+    ~Renderer();
+    bool render(float t_sec);
 private:
-	std::unique_ptr<GL::Window> window;
+	std::unique_ptr<GLFWwindow, std::function<void(GLFWwindow*)>> window;
 
 	float width = 800;
 	float height = 600;
-	OVRManager ovrManager;
+//	OVRManager ovrManager;
 
-	std::unique_ptr<Scene> scene;
-	std::unique_ptr<GL::Shader> vert;
-	std::unique_ptr<GL::Shader> frag;
-	std::unique_ptr<GL::Program> program;
+	//std::unique_ptr<Scene> scene;
+	//std::unique_ptr<oglplus::Shader> vert;
+	//std::unique_ptr<oglplus::Shader> frag;
+	//std::unique_ptr<oglplus::Program> program;
 
 };
 

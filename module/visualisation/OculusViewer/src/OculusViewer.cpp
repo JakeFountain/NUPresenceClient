@@ -15,7 +15,7 @@
  * along with the NUbots Codebase.  If not, see <http://www.gnu.org/licenses/>.
  *
  * Copyright 2016 NUbots <nubots@nubots.net>
- */
+*/
 
 #include "OculusViewer.h"
 
