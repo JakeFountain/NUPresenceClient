@@ -3,23 +3,7 @@
 #include "Renderer.h"
 
 Renderer::Renderer(){
-	glewInit();
-
-    /* Initialize the library */
-	if (!glfwInit()) {
-		throw std::runtime_error("Error initialising glfw");
-	}
-
-	/* Create a windowed mode window and its OpenGL context */
-	width = 1920;
-	height = 1080;
-	window = std::unique_ptr<GLFWwindow, std::function<void(GLFWwindow*)>>(glfwCreateWindow(width, height, "NUPresence Client", nullptr, nullptr), glfwDestroyWindow);
-
-    if (!window)
-    {
-        glfwTerminate();
-		throw std::runtime_error("Error initialising window");
-    }
+	
 //   vert = std::make_unique<oglplus::Shader>(oglplus::ShaderType::Vertex, GLSL(
 	// 	in vec3 pos;
 	// 	in vec3 normal;
@@ -68,6 +52,26 @@ Renderer::~Renderer(){
 bool Renderer::render(float t_sec){
 	
 	// Main loop	
+	if (!window) {
+		glewInit();
+
+		/* Initialize the library */
+		if (!glfwInit()) {
+			throw std::runtime_error("Error initialising glfw");
+		}
+
+		/* Create a windowed mode window and its OpenGL context */
+		width = 1920;
+		height = 1080;
+		window = std::unique_ptr<GLFWwindow, std::function<void(GLFWwindow*)>>(glfwCreateWindow(width, height, "NUPresence Client", nullptr, nullptr), glfwDestroyWindow);
+
+		if (!window)
+		{
+			glfwTerminate();
+			throw std::runtime_error("Error initialising window");
+		}
+	}
+
 
     /* Make the window's context current */
     glfwMakeContextCurrent(window.get());
@@ -104,6 +108,9 @@ bool Renderer::render(float t_sec){
 		//oglplus method?
 		//glViewport(0, 0, width, height);
 		//ovrManager.drawMirror(gl);
+
+		glClearColor(0, 0, 1, 1);
+		glClear(GL_COLOR_BUFFER_BIT);
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window.get());
