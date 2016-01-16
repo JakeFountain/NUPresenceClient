@@ -107,10 +107,12 @@ if (WIN32)
                 "${GLFW_LOCATION}/lib/x64"
                 "${GLFW_LOCATION}/lib-msvc110"
                 "${GLFW_LOCATION}/lib-vc2012"
+                "${GLFW_LOCATION}/lib-vc2015"
                 "$ENV{GLFW_LOCATION}/lib"
                 "$ENV{GLFW_LOCATION}/lib/x64"
                 "$ENV{GLFW_LOCATION}/lib-msvc110"
                 "$ENV{GLFW_LOCATION}/lib-vc2012"
+                "$ENV{GLFW_LOCATION}/lib-vc2015"
             PATHS
                 "$ENV{PROGRAMFILES}/GLFW/lib"
                 "${OPENGL_LIBRARY_DIR}"

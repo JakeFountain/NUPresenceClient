@@ -2,9 +2,9 @@
 
 #include "OVRManager.h"
 #include "Scene.h"
-#include <GL/glew.h>  
-#include <oglplus/all.hpp>
+#include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include <oglplus/all.hpp>
 #include <iostream>
 #include <memory>
 #include <functional>
@@ -16,6 +16,7 @@ class Renderer {
 public:
     Renderer();
     ~Renderer();
+    void init();
     bool render(float t_sec);
 private:
 	std::unique_ptr<GLFWwindow, std::function<void(GLFWwindow*)>> window;
@@ -24,10 +25,14 @@ private:
 	float height = 600;
 //	OVRManager ovrManager;
 
-	//std::unique_ptr<Scene> scene;
-	//std::unique_ptr<oglplus::Shader> vert;
-	//std::unique_ptr<oglplus::Shader> frag;
-	//std::unique_ptr<oglplus::Program> program;
+	
+	struct Graphics{
+		oglplus::Context context;
+		oglplus::Program program;
+		Scene scene;
+	};
+
+	std::unique_ptr<Graphics> gl;
 
 };
 

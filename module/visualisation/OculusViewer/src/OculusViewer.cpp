@@ -18,7 +18,7 @@
 */
 
 #include "OculusViewer.h"
-
+#include <oglplus/all.hpp>
 
 // #include "extension/Configuration.h"
 
@@ -38,7 +38,22 @@ namespace visualisation {
 		on<Always>().then([this] {
 			auto now = NUClear::clock::now();
 			float time_elapsed_seconds = std::chrono::duration_cast<std::chrono::microseconds>(now - start).count() / 1e6;
-			renderer.render(time_elapsed_seconds);
+            try{
+                bool running = renderer.render(time_elapsed_seconds);
+                if(!running) powerplant.shutdown();
+            } catch(oglplus::Error& err) {
+                std::cerr
+                    << "Error (in "
+                    << err.GLFunc()
+                    << "'): "
+                    << err.what()
+                    << " ["
+                    << err.SourceFile()
+                    << ":"
+                    << err.SourceLine()
+                    << "] "
+                    << std::endl;
+            }
 		});
 
     }
