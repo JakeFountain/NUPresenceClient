@@ -1,30 +1,43 @@
 
-// #include "RenderMesh.h"
+#include "RenderMesh.h"
 
-// RenderMesh::RenderMesh(const RenderMesh& m) : mesh(m.mesh), texture(m.texture), image() {
-// 	vao = m.vao;
-// 	vBuffer = m.vBuffer;
-// }
-
-
-// RenderMesh::RenderMesh(std::string modelName, std::string textureName) : 
-// 	{
-// 		oglplus::image::Load(textureName);
-// 		texture = oglplus::Texture(image);
-// 	}
+RenderMesh::RenderMesh(const RenderMesh& m) : meshes(m.meshes) {
+	
+}
 
 
-// void RenderMesh::render(oglplus::Context& gl, oglplus::Mat4 modelview, oglplus::Mat4 projection, oglplus::Program& shader) {
-// 	glEnable(GL_DEPTH_TEST);
-// 	vao.BindAttribute(shader.GetAttribute( "pos" ), vBuffer, oglplus::Type::Float, 3, sizeof(float) * 8, 0 );
-// 	//vao.BindAttribute(shader.GetAttribute( "normal" ), vBuffer, oglplus::Type::Float, 3, sizeof(float) * 8, sizeof(float) * 3 );
-// 	vao.BindAttribute(shader.GetAttribute( "texcoord" ), vBuffer, oglplus::Type::Float, 2, sizeof(float) * 8, sizeof(float) * 6 );
-// 	shader.SetUniform("modelview", modelview);
-// 	shader.SetUniform("projection", projection);
-// 	gl.BindTexture(texture, 0);
-// 	shader.SetUniform("tex", 0);
+RenderMesh::RenderMesh(std::string modelName, std::string textureName):
+load_mesh(mesh_input.stream), 
+mesh_instr(load_mesh.Instructions()), 
+mesh_indices(load_mesh.Indices())
+{
+	mesh.Bind();
 
-// 	gl.UseProgram(shader);
-// 	gl.DrawArrays( vao, oglplus::Primitive::Triangles, 0, mesh.VertexCount() );
+	positions.Bind(Buffer::Target::Array);
+	{
+		std::vector<GLfloat> data;
+		GLuint n_per_vertex = load_mesh.Positions(data);
+		Buffer::Data(Buffer::Target::Array, data);
+	}
 
-// }
+	normals.Bind(Buffer::Target::Array);
+	{
+		std::vector<GLfloat> data;
+		GLuint n_per_vertex = load_mesh.Normals(data);
+		Buffer::Data(Buffer::Target::Array, data);
+	}
+
+}
+
+
+void RenderMesh::render(oglplus::Context& gl, oglplus::Mat4f modelview, oglplus::Mat4f projection, oglplus::Program& shader) {
+	shader.Use();
+
+	gl.Enable(Capability::DepthTest);
+	(shader|"Position").Setup<GLfloat>().Enable();
+	(shader|"Normal").Setup<GLfloat>(3).Enable();
+	(shader|"Texcoord").Setup<GLfloat>(2).Enable();
+	
+	shader.
+
+}
