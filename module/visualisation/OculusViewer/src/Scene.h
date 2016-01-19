@@ -11,7 +11,7 @@ class Scene {
 public:
     Scene();
 
-    void render(oglplus::Context& glContext, oglplus::Program& shaderProgram, oglplus::Mat4 view, oglplus::Mat4 projection);
+    void render(oglplus::Context& glContext, oglplus::Program& shaderProgram, oglplus::Mat4f view, oglplus::Mat4f projection);
 private:
 	GameObject rootObject;
 };

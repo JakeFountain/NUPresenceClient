@@ -1,4 +1,3 @@
-#define OGLPLUS_NO_SITE_CONFIG
 
 #include "OVRManager.h"
 #include "Scene.h"

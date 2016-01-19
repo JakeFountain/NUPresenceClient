@@ -12,6 +12,7 @@ SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS ON)
 # We use additional modules that cmake needs to know about
 SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
+add_definitions(-DOGLPLUS_NO_SITE_CONFIG)
 
 ADD_DEFINITIONS(-DNOMINMAX)
 

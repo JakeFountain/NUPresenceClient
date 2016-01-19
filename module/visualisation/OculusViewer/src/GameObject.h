@@ -16,9 +16,10 @@ public:
 	std::vector<GameObject> children;
 	std::vector<RenderMesh> meshes;
 	// std::vector<Light> lights;
-	oglplus::Mat4 transform;
-
-	GameObject(oglplus::Mat4 t = oglplus::Mat4()) : transform(t){};	
+	oglplus::Mat4f transform;
+	GameObject(oglplus::Mat4f t = oglplus::Mat4f()) :
+		transform(t) {
+	};
 	~GameObject(){};	
 	
 	void addMesh(RenderMesh& mesh){
@@ -33,9 +34,9 @@ public:
 	// 	lights.push_back(light);
 	// }
 
-	void render(oglplus::Context& gl, oglplus::Mat4 prevModel, oglplus::Mat4 view, oglplus::Mat4 projection/*, std::vector<Light>& outLights*/, oglplus::Program& shader){
-		oglplus::Mat4 model = prevModel * transform;
-		oglplus::Mat4 modelview = view * model;
+	void render(oglplus::Context& gl, oglplus::Mat4f prevModel, oglplus::Mat4f view, oglplus::Mat4f projection/*, std::vector<Light>& outLights*/, oglplus::Program& shader){
+		oglplus::Mat4f model = prevModel * transform;
+		oglplus::Mat4f modelview = view * model;
 		for(auto& child : children){
 			child.render(gl, model, view, projection, shader);
 		}
