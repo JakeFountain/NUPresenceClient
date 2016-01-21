@@ -24,7 +24,6 @@ private:
 	float height = 600;
 	OVRManager ovrManager;
 
-	std::unique_ptr<GL::Framebuffer> spareBuffer;
 	std::unique_ptr<TextureToScreen> texToScreenRenderer;
 
 

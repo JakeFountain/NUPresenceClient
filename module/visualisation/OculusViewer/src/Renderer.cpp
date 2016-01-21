@@ -35,9 +35,6 @@ bool Renderer::render(float t_sec){
 
 		scene = std::make_unique<Scene>();
 
-		spareBuffer = std::make_unique<GL::Framebuffer>(width,height);
-
-
 		try {
 			texToScreenRenderer = std::make_unique<TextureToScreen>();
 
@@ -116,12 +113,6 @@ bool Renderer::render(float t_sec){
 			if (!renderResult) {
 				std::cout << "Rift display failed!" << std::endl;
 			}
-		} else {
-			context.BindFramebuffer(*spareBuffer);
-			context.Clear();
-			GL::Mat4 view = GL::Mat4::LookAt(GL::Vec3(1, 1, 1), GL::Vec3(0, 0, 0), GL::Vec3(0, 0, 1)) * origin;
-			GL::Mat4 proj = GL::Mat4::Perspective(1.0, width / float(height), 0.1, 100);
-			scene->render(context, *program, view, proj);
 		}
 
 		//Draw to mirror
@@ -135,7 +126,10 @@ bool Renderer::render(float t_sec){
 			texToScreenRenderer->renderTextureToScreen(context, GL::Texture(ovrManager.getCurrentEyeBuffer()));
 		}
 		else {
-			texToScreenRenderer->renderTextureToScreen(context, spareBuffer->GetTexture());
+			GL::Mat4 view = GL::Mat4::LookAt(GL::Vec3(1, 1, 1), GL::Vec3(0, 0, 0), GL::Vec3(0, 1, 0)) * origin;
+			GL::Mat4 proj = GL::Mat4::Perspective(1.0, width / float(height), 0.1, 100);
+			proj = proj.Scale(GL::Vec3(1, -1, 1));
+			scene->render(context, *program, view, proj);
 		}
 
 		glfwSwapBuffers(window.get());

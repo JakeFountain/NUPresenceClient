@@ -22,7 +22,6 @@ TextureToScreen::TextureToScreen():
 			)),
 	shader(frag, vert),
 	vao()
-	
 {
 	float vertices[24] = {
 		1.0f, 1.0f, 1.0f, 1.0f,
