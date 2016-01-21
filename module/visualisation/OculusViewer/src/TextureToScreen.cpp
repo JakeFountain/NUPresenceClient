@@ -17,7 +17,7 @@ TextureToScreen::TextureToScreen():
 				out vec4 outColor;
 				uniform sampler2D tex;
 				void main() {
-					outColor = vec4(1, 0, 0, 1);// vec4(Texcoord.x, Texcoord.y, 0, 1);//texture(tex, vec2(Texcoord.x, Texcoord.y));
+					outColor = texture(tex, vec2(Texcoord.x, Texcoord.y));
 				}
 			)),
 	shader(frag, vert),
@@ -40,7 +40,7 @@ TextureToScreen::TextureToScreen():
 void TextureToScreen::renderTextureToScreen(GL::Context& gl, GL::Texture tex){
 
 	vao.BindAttribute(shader.GetAttribute( "pos" ), vBuffer, GL::Type::Float, 2, sizeof(float) * 4, 0 );
-	//vao.BindAttribute(shader.GetAttribute( "texcoord" ), vBuffer, GL::Type::Float, 2, sizeof(float) * 4, sizeof(float) * 2 );
+	vao.BindAttribute(shader.GetAttribute( "texcoord" ), vBuffer, GL::Type::Float, 2, sizeof(float) * 4, sizeof(float) * 2 );
 	
 	gl.BindTexture(tex, 0);
 	shader.SetUniform("tex", 0);
