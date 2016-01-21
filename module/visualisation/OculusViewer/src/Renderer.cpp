@@ -2,6 +2,10 @@
 
 #include "Renderer.h"
 
+#define GLFW_EXPOSE_NATIVE_WIN32
+#define GLFW_EXPOSE_NATIVE_WGL
+#include <GLFW/glfw3native.h>
+
 Renderer::Renderer():
 	ovrManager()
 {
@@ -13,8 +17,21 @@ void Renderer::render(float t_sec){
 	if(!window){
 		width = 1920;
 		height = 1080;
-		window = std::make_unique<GL::Window>(width, height, "Visualisation Window", GL::WindowStyle::Close);
-		GL::Context& gl = window->GetContext();
+
+		glfwSetErrorCallback([](int, const char* msg) {
+			std::cout << msg << std::endl;
+		});
+
+		glfwInit();
+
+		window = std::unique_ptr<GLFWwindow, std::function<void(GLFWwindow*)>>(glfwCreateWindow(width, height, "Visualisation Window", nullptr, nullptr),glfwDestroyWindow);
+		if (!window) {
+			std::cout << "GLFW window creation failed: " << std::endl;
+		}
+
+		glfwMakeContextCurrent(window.get());
+
+		context =  std::make_unique<GL::Context>(24,32,8,1,GetDC(glfwGetWin32Window(window.get())));
 		scene = std::make_unique<Scene>();
 		try {
 
@@ -58,7 +75,6 @@ void Renderer::render(float t_sec){
 
 
 	}
-	GL::Context& gl = window->GetContext();
 
 	// Main loop
 	//ovrManager.printCurrentPose();
@@ -66,12 +82,12 @@ void Renderer::render(float t_sec){
 
 
 	GL::Event ev;
-	if (window->IsOpen())
+	if (!glfwWindowShouldClose(window.get()))
     {
-        while (window->GetEvent(ev));
+        //while (window->GetEvent(ev));
 
 
-		gl.Clear();
+		context->Clear();
 		
 		float camera_period = 10;
 		float sin = std::sin(2 * 3.14 * t_sec / camera_period);
@@ -84,9 +100,9 @@ void Renderer::render(float t_sec){
 		int eyeNumber = 0;
 		for (auto& pose : poses) {
 			GL::Mat4 view = pose.view * origin;
-			ovrManager.setRenderTarget(gl, OVRManager::RenderTarget(eyeNumber));
-			if(eyeNumber == 0) gl.Clear();
-			scene->render(gl, *program, view, pose.proj);
+			ovrManager.setRenderTarget(*context, OVRManager::RenderTarget(eyeNumber));
+			if(eyeNumber == 0) context->Clear();
+			scene->render(*context, *program, view, pose.proj);
 			eyeNumber++;
 		}
 		
@@ -97,11 +113,11 @@ void Renderer::render(float t_sec){
 		}
 
 		//Draw to mirror
-		gl.BindFramebuffer(); //Bind to screen
+		context->BindFramebuffer(); //Bind to screen
 		glViewport(0, 0, width, height);
-		ovrManager.drawMirror(gl);
+		ovrManager.drawMirror(*context);
 
-        window->Present();
+		glfwSwapBuffers(window.get());
 
 	}
 	

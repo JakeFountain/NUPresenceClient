@@ -79,7 +79,7 @@ find_path( GLFW_INCLUDE_DIR
 
 if (WIN32)
     if(CYGWIN)
-        find_library( GLFW_glfw_LIBRARY 
+        find_library( GLFW_LIBRARY 
             NAMES
                 glfw32
             HINTS
@@ -96,7 +96,7 @@ if (WIN32)
                 "The GLFW library"
         )
     else()
-        find_library( GLFW_glfw_LIBRARY
+        find_library( GLFW_LIBRARY
             NAMES 
                 glfw32 
                 glfw32s 
@@ -120,7 +120,7 @@ if (WIN32)
     endif()
 else ()
     if (APPLE)
-        find_library( GLFW_glfw_LIBRARY glfw
+        find_library( GLFW_LIBRARY glfw
             NAMES 
                 glfw
                 glfw3
@@ -160,7 +160,7 @@ else ()
 
         list(APPEND GLFW_x11_LIBRARY "${X11_Xrandr_LIB}" "${X11_Xxf86vm_LIB}" "${X11_Xcursor_LIB}" "${X11_Xinerama_LIB}" "${CMAKE_THREAD_LIBS_INIT}" -lrt -lXi)
 
-        find_library( GLFW_glfw_LIBRARY
+        find_library( GLFW_LIBRARY
             NAMES 
                 glfw
                 glfw3
@@ -188,8 +188,8 @@ set( GLFW_FOUND "NO" )
 
 if(GLFW_INCLUDE_DIR)
 
-    if(GLFW_glfw_LIBRARY)
-        set( GLFW_LIBRARIES "${GLFW_glfw_LIBRARY}"
+    if(GLFW_LIBRARY)
+        set( GLFW_LIBRARIES "${GLFW_LIBRARY}"
                             "${GLFW_x11_LIBRARY}"
                             "${GLFW_cocoa_LIBRARY}"
                             "${GLFW_iokit_LIBRARY}"
@@ -197,7 +197,7 @@ if(GLFW_INCLUDE_DIR)
         set( GLFW_FOUND "YES" )
         set (GLFW_LIBRARY "${GLFW_LIBRARIES}")
         set (GLFW_INCLUDE_PATH "${GLFW_INCLUDE_DIR}")
-    endif(GLFW_glfw_LIBRARY)
+    endif(GLFW_LIBRARY)
 
 
     # Tease the GLFW_VERSION numbers from the lib headers
@@ -249,7 +249,7 @@ find_package_handle_standard_args(GLFW
 mark_as_advanced(
   GLFW_INCLUDE_DIR
   GLFW_LIBRARIES
-  GLFW_glfw_LIBRARY
+  GLFW_LIBRARY
   GLFW_cocoa_LIBRARY
 )
 
