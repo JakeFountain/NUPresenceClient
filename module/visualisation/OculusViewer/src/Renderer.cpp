@@ -15,7 +15,7 @@ Renderer::Renderer():
 bool Renderer::render(float t_sec){
 	
 	if(!window){
-		width = 1920;
+		width = 1920 / 2;
 		height = 1080;
 
 		glfwSetErrorCallback([](int, const char* msg) {
@@ -31,7 +31,8 @@ bool Renderer::render(float t_sec){
 
 		glfwMakeContextCurrent(window.get());
 
-		context =  std::make_unique<GL::Context>(24,32,8,1,GetDC(glfwGetWin32Window(window.get())));
+		GL::Context context = GL::Context::UseExistingContext();
+
 		scene = std::make_unique<Scene>();
 		try {
 
@@ -80,18 +81,11 @@ bool Renderer::render(float t_sec){
 
 	}
 
-	// Main loop
-	//ovrManager.printCurrentPose();
-	context->ClearColor(GL::Color(255, 0, 0, 255));
 
-
-	GL::Event ev;
+	GL::Context context = GL::Context::UseExistingContext();
 	if (!glfwWindowShouldClose(window.get()))
     {
-        //while (window->GetEvent(ev));
-
-
-		context->Clear();
+		context.Clear();
 		
 		float camera_period = 10;
 		float sin = std::sin(2 * 3.14 * t_sec / camera_period);
@@ -104,9 +98,9 @@ bool Renderer::render(float t_sec){
 		int eyeNumber = 0;
 		for (auto& pose : poses) {
 			GL::Mat4 view = pose.view * origin;
-			ovrManager.setRenderTarget(*context, OVRManager::RenderTarget(eyeNumber));
-			if(eyeNumber == 0) context->Clear();
-			scene->render(*context, *program, view, pose.proj);
+			ovrManager.setRenderTarget(context, OVRManager::RenderTarget(eyeNumber));
+			if(eyeNumber == 0) context.Clear();
+			scene->render(context, *program, view, pose.proj);
 			eyeNumber++;
 		}
 		
@@ -117,11 +111,13 @@ bool Renderer::render(float t_sec){
 		}
 
 		//Draw to mirror
-		context->BindFramebuffer(); //Bind to screen
-		context->ClearColor(GL::Color(t_sec * 255 / 10,0,0,255));
-		context->Clear();
-		glViewport(0, 0, width, height);
-		ovrManager.drawMirror(*context);
+		context.Disable(GL::Capability::DepthTest);
+		context.BindFramebuffer(); //Bind to screen
+		context.Clear();
+		GL::Mat4 view = poses[0].view * origin;
+		GL::Mat4 proj = poses[0].proj.Scale(GL::Vec3(1, -1, 1));
+		scene->render(context, *program, view, proj );
+		//ovrManager.drawMirror(context);
 
 		glfwSwapBuffers(window.get());
 

@@ -19,7 +19,6 @@ public:
 private:
 	//std::unique_ptr<GL::Window> window;
 	std::unique_ptr<GLFWwindow,std::function<void(GLFWwindow*)>> window;
-	std::unique_ptr<GL::Context> context;
 
 	float width = 800;
 	float height = 600;

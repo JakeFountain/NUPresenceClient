@@ -10,7 +10,7 @@
 	 //    };
 	    
 	 //    vbo = GL::VertexBuffer(vertices, sizeof(vertices), GL::BufferUsage::StaticDraw);
-		GameObject monkey(GL::Mat4().Scale(GL::Vec3(10,10,10)));
+		GameObject monkey(GL::Mat4().Scale(GL::Vec3(1,1,1)));
 		try {
 			monkey.addMesh(RenderMesh("../../../assets/monkey.obj", "../../../assets/monkey_texture2.png"));
 		} catch (GL::FileException e) {

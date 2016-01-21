@@ -32,7 +32,7 @@ void TextureToScreen::renderTextureToScreen(GL::Context& gl, GL::Texture tex){
 	gl.UseProgram(shader);
 
 	vao.BindAttribute(shader.GetAttribute( "pos" ), vBuffer, GL::Type::Float, 2, sizeof(float) * 4, 0 );
-	vao.BindAttribute(shader.GetAttribute( "texcoord" ), vBuffer, GL::Type::Float, 2, sizeof(float) * 4, sizeof(float) * 2 );
+	//vao.BindAttribute(shader.GetAttribute( "texcoord" ), vBuffer, GL::Type::Float, 2, sizeof(float) * 4, sizeof(float) * 2 );
 	
 	gl.BindTexture(tex, 0);
 	shader.SetUniform("tex", 0);
