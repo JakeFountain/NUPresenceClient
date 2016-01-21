@@ -15,7 +15,7 @@
 class Renderer {
 public:
     Renderer();
-    void render(float t_sec);
+    bool render(float t_sec);
 private:
 	//std::unique_ptr<GL::Window> window;
 	std::unique_ptr<GLFWwindow,std::function<void(GLFWwindow*)>> window;

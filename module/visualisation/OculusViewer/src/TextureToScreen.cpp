@@ -17,7 +17,8 @@ TextureToScreen::TextureToScreen():
 				out vec4 outColor;
 				uniform sampler2D tex;
 				void main() {
-					outColor = vec4(1,0,0,1);// texture(tex, vec2(Texcoord.x, Texcoord.y));
+					outColor = vec4(1,1,0,1);
+					vec4 blah = texture(tex, vec2(Texcoord.x, Texcoord.y));
 				}
 			)),
 	shader(frag, vert),
@@ -28,23 +29,13 @@ TextureToScreen::TextureToScreen():
 }
 
 void TextureToScreen::renderTextureToScreen(GL::Context& gl, GL::Texture tex){
-	std::cout << __FILE__ << ":  " << __LINE__ << std::endl;
-	gl.BindFramebuffer();
-	std::cout << __FILE__ << ":  " << __LINE__ << std::endl;
-
 	gl.UseProgram(shader);
 
-	std::cout << __FILE__ << ":  " << __LINE__ << std::endl;
 	vao.BindAttribute(shader.GetAttribute( "pos" ), vBuffer, GL::Type::Float, 2, sizeof(float) * 4, 0 );
-	std::cout << __FILE__ << ":  " << __LINE__ << std::endl;
 	vao.BindAttribute(shader.GetAttribute( "texcoord" ), vBuffer, GL::Type::Float, 2, sizeof(float) * 4, sizeof(float) * 2 );
 	
-	std::cout << __FILE__ << ":  " << __LINE__ << std::endl;
 	gl.BindTexture(tex, 0);
-	std::cout << __FILE__ << ":  " << __LINE__ << std::endl;
 	shader.SetUniform("tex", 0);
 	
-	std::cout << __FILE__ << ":  " << __LINE__ << std::endl;
 	gl.DrawArrays( vao, GL::Primitive::Triangles, 0, 6 );
-	std::cout << __FILE__ << ":  " << __LINE__ << std::endl;
 }

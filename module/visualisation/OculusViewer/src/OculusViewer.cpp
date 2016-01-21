@@ -38,7 +38,9 @@ namespace visualisation {
 		on<Always>().then([this] {
 			auto now = NUClear::clock::now();
 			float time_elapsed_seconds = std::chrono::duration_cast<std::chrono::microseconds>(now - start).count() / 1e6;
-			renderer.render(time_elapsed_seconds);
+			if (!renderer.render(time_elapsed_seconds)) {
+				powerplant.shutdown();
+			}
 		});
 
     }

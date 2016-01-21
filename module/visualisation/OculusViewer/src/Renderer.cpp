@@ -12,7 +12,7 @@ Renderer::Renderer():
 }
 
     
-void Renderer::render(float t_sec){
+bool Renderer::render(float t_sec){
 	
 	if(!window){
 		width = 1920;
@@ -66,19 +66,23 @@ void Renderer::render(float t_sec){
 
 		program = std::make_unique<GL::Program>(*vert, *frag);
 
+		bool ovrInitResult = ovrManager.init();
+		if (!ovrInitResult) {
+			std::cout << "OVR Failed to initialise!" << std::endl;
+		}
+
 		} catch (GL::CompileException e) {
 			std::cout << e.what() << std::endl;
 			throw e;
 		}
 
-		bool ovrInitialiesed = ovrManager.init();
 
 
 	}
 
 	// Main loop
 	//ovrManager.printCurrentPose();
-	
+	context->ClearColor(GL::Color(255, 0, 0, 255));
 
 
 	GL::Event ev;
@@ -114,11 +118,21 @@ void Renderer::render(float t_sec){
 
 		//Draw to mirror
 		context->BindFramebuffer(); //Bind to screen
+		context->ClearColor(GL::Color(t_sec * 255 / 10,0,0,255));
+		context->Clear();
 		glViewport(0, 0, width, height);
 		ovrManager.drawMirror(*context);
 
 		glfwSwapBuffers(window.get());
 
+		glfwPollEvents();
+
+		if (glfwGetKey(window.get(), GLFW_KEY_ESCAPE) > 0) {
+			glfwSetWindowShouldClose(window.get(), 1);
+		}
+		return true;
 	}
+	return false;
+
 	
 }
