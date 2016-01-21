@@ -12,15 +12,7 @@ class TextureToScreen{
 		GL::VertexArray vao;
 		GL::VertexBuffer vBuffer;
 
-		float vertices[24] = {
-			1, 1, 1, 1,
-			1, -1, 1, 0,
-			-1,-1, 0, 0,
-			-1,-1, 0, 0,
-			-1, 1, 0, 1,
-			1, 1, 1, 1
-		};
-
+		
 
 	public:
 		TextureToScreen();

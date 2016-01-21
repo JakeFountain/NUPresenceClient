@@ -41,14 +41,6 @@ bool OVRManager::init(){
 
 	// Turn off vsync to let the compositor do its magic
 	wglSwapIntervalEXT(0);
-
-	try {
-		texToScreenRenderer = std::make_unique<TextureToScreen>();
-	}
-	catch (GL::CompileException e) {
-		std::cout << e.what() << std::endl;
-		throw e;
-	}
 	
 	return eyeBufferResult;
 
@@ -146,12 +138,13 @@ std::vector<EyePose> OVRManager::getCurrentPoses(){
 		}
 			
 	} else {
-		std::cout << "RIFT NOT CONNECTED!!!" << std::endl;
+		//std::cout << "RIFT NOT CONNECTED!!!" << std::endl;
 	}
 	return eyePoses;
 }
 
 bool OVRManager::renderToRift(){
+	
 	double           ftiming = ovr_GetPredictedDisplayTime(session, 0);
 	// Keeping sensorSampleTime as close to ovr_GetTrackingState as possible - fed into the layer
 	double           sensorSampleTime = ovr_GetTimeInSeconds();
@@ -185,8 +178,9 @@ bool OVRManager::renderToRift(){
 	return result == ovrSuccess;
 }
 
-void OVRManager::drawMirror(GL::Context& gl) {
-	texToScreenRenderer->renderTextureToScreen(gl, eyeBuffer[pTextureSet->CurrentIndex]->GetTexture());
+
+GLuint OVRManager::getCurrentEyeBuffer() {
+	return eyeBuffer[pTextureSet->CurrentIndex]->GetTexture();
 }
    
 OVRManager::~OVRManager(){

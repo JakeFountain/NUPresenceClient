@@ -32,6 +32,7 @@ public:
 	std::vector<EyePose> getCurrentPoses();
 	bool renderToRift();
 	void drawMirror(GL::Context & gl);
+	GLuint getCurrentEyeBuffer();
 	ovrSizei getResolution();
 	ovrSizei getMirrorResolution();
 
@@ -54,7 +55,6 @@ private:
 	std::vector<std::unique_ptr<GL::Framebuffer>> eyeBuffer;
 	std::unique_ptr<GL::Framebuffer> mirrorBuffer;
 
-	std::unique_ptr<TextureToScreen> texToScreenRenderer;
 };
 
 #endif

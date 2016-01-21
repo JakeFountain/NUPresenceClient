@@ -17,19 +17,27 @@ TextureToScreen::TextureToScreen():
 				out vec4 outColor;
 				uniform sampler2D tex;
 				void main() {
-					outColor = vec4(1,1,0,1);
-					vec4 blah = texture(tex, vec2(Texcoord.x, Texcoord.y));
+					outColor = vec4(1, 0, 0, 1);// vec4(Texcoord.x, Texcoord.y, 0, 1);//texture(tex, vec2(Texcoord.x, Texcoord.y));
 				}
 			)),
 	shader(frag, vert),
-	vao(),
-	vBuffer(vertices, 24 * sizeof(float), GL::BufferUsage::StaticDraw)
+	vao()
+	
 {
+	float vertices[24] = {
+		1.0f, 1.0f, 1.0f, 1.0f,
+		1.0f, -1.0f, 1.0f, 0.0f,
+		-1.0f,-1.0f, 0.0f, 0.0f,
+		-1.0f,-1.0f, 0.0f, 0.0f,
+		-1.0f, 1.0f, 0.0f, 1.0f,
+		1.0f, 1.0f, 1.0f, 1.0f
+	};
+
+	vBuffer = GL::VertexBuffer(vertices, 24 * sizeof(float), GL::BufferUsage::StaticDraw);
 
 }
 
 void TextureToScreen::renderTextureToScreen(GL::Context& gl, GL::Texture tex){
-	gl.UseProgram(shader);
 
 	vao.BindAttribute(shader.GetAttribute( "pos" ), vBuffer, GL::Type::Float, 2, sizeof(float) * 4, 0 );
 	//vao.BindAttribute(shader.GetAttribute( "texcoord" ), vBuffer, GL::Type::Float, 2, sizeof(float) * 4, sizeof(float) * 2 );
@@ -37,5 +45,6 @@ void TextureToScreen::renderTextureToScreen(GL::Context& gl, GL::Texture tex){
 	gl.BindTexture(tex, 0);
 	shader.SetUniform("tex", 0);
 	
+	gl.UseProgram(shader);
 	gl.DrawArrays( vao, GL::Primitive::Triangles, 0, 6 );
 }

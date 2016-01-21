@@ -14,7 +14,7 @@
 		try {
 			monkey.addMesh(RenderMesh("../../../assets/monkey.obj", "../../../assets/monkey_texture2.png"));
 		} catch (GL::FileException e) {
-			std::cout << "File exception: " << std::endl;
+			std::cout << "File exception! " << std::endl;
 		}
 		rootObject.addChild(monkey);
     }
