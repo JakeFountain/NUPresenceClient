@@ -14,7 +14,7 @@ class TextureToScreen{
 
 	public:
 		TextureToScreen();
-		void renderTextureToScreen(GL::Context& gl,GL::Texture tex);
+		void renderTextureToScreen(GL::Context & gl, GLuint tex);
 };
 
 #endif

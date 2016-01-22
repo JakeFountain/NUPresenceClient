@@ -36,7 +36,7 @@ TextureToScreen::TextureToScreen():
 
 }
 
-void TextureToScreen::renderTextureToScreen(GL::Context& gl, GL::Texture tex){
+void TextureToScreen::renderTextureToScreen(GL::Context& gl, GLuint tex){
 
 	vao.BindAttribute(shader.GetAttribute( "pos" ), vBuffer, GL::Type::Float, 2, sizeof(float) * 4, 0 );
 	vao.BindAttribute(shader.GetAttribute( "texcoord" ), vBuffer, GL::Type::Float, 2, sizeof(float) * 4, sizeof(float) * 2 );
@@ -44,7 +44,8 @@ void TextureToScreen::renderTextureToScreen(GL::Context& gl, GL::Texture tex){
 	gl.UseProgram(shader);
 
 	shader.SetUniform("tex", 0);
-	gl.BindTexture(tex, 0);
+	glActiveTexture(GL_TEXTURE0 + 0);
+	glBindTexture(GL_TEXTURE_2D, tex);
 
 	gl.DrawArrays( vao, GL::Primitive::Triangles, 0, 6 );
 }

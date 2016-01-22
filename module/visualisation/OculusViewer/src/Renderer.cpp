@@ -126,21 +126,24 @@ bool Renderer::render(float t_sec){
 		context.Disable(GL::Capability::DepthTest);
 		context.BindFramebuffer(); //Bind to screen
 		context.Clear();
-		//GL::Mat4 view = poses[0].view * origin;
-		//GL::Mat4 proj = poses[0].proj.Scale(GL::Vec3(1, -1, 1));
-		//scene->render(context, *program, view, proj);
+
+		GL::Mat4 proj = GL::Mat4::Perspective(1.0, width / float(height), 0.01, 100);
+		proj = proj.Scale(GL::Vec3(1, -1, 1));
+
 		if (poses.size() > 0) {
-			GLuint eyeTex = GL::Texture(ovrManager.getLastEyeTexture());
-			texToScreenRenderer->renderTextureToScreen(context, 1);// 
+			//TODO:fix mirroring
+			//GLuint eyeTex = ovrManager.getLastEyeTexture();
+			//texToScreenRenderer->renderTextureToScreen(context, eyeTex);
+
+			//For now re-render
+			GL::Mat4 view = poses[0].view * origin;
+			scene->render(context, *program, view, proj);
 		}
 		else {
 			GL::Mat4 view = GL::Mat4::LookAt(GL::Vec3(1, 1, 1), GL::Vec3(0, 0, 0), GL::Vec3(0, 1, 0)) * origin;
-			GL::Mat4 proj = GL::Mat4::Perspective(1.0, width / float(height), 0.1, 100);
-			proj = proj.Scale(GL::Vec3(1, -1, 1));
 			scene->render(context, *program, view, proj);
 		}
 
-		
 
 		glfwSwapBuffers(window.get());
 

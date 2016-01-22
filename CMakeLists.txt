@@ -1,6 +1,6 @@
 CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
 
-set(TARGET_ARCHITECTURE "x64") # Win32 or x64
+set(TARGET_ARCHITECTURE "Win32") # Win32 or x64
 
 # Maps to a solution file (Tutorial.sln). The solution will
 # have all targets (exe, lib, dll) as projects (.vcproj)

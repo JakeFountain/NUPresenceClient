@@ -50,7 +50,7 @@ private:
 	OVR::Sizei bufferSize;
 
  	ovrSwapTextureSet* pTextureSet;
-	GLuint lastEyeTexture;
+	int lastEyeTextureIndex;
 
 	std::vector<std::unique_ptr<GL::Framebuffer>> eyeBuffer;
 	std::unique_ptr<GL::Framebuffer> mirrorBuffer;
