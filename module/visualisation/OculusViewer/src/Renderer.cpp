@@ -104,7 +104,7 @@ bool Renderer::render(float t_sec){
 			ovrManager.setRenderTarget(context, OVRManager::RenderTarget(eyeNumber));
 			
 			if (eyeNumber == 0) {
-				glClearColor(1, 0, 0, 1);
+				//glClearColor(1, 0, 0, 1);
 				context.Clear();
 				glClearColor(0, 0, 0, 1);
 
@@ -136,7 +136,8 @@ bool Renderer::render(float t_sec){
 			//texToScreenRenderer->renderTextureToScreen(context, eyeTex);
 
 			//For now re-render
-			GL::Mat4 view = poses[0].view * origin;
+			GL::Mat4 view = poses[0].view;
+			view = view * origin;
 			scene->render(context, *program, view, proj);
 		}
 		else {
