@@ -15,7 +15,7 @@ Renderer::Renderer():
 bool Renderer::render(float t_sec){
 	
 	if(!window){
-		width = 1920 / 2;
+		width = 1920 ;
 		height = 1080;
 
 		glfwSetErrorCallback([](int, const char* msg) {
@@ -88,7 +88,7 @@ bool Renderer::render(float t_sec){
 	GL::Context context = GL::Context::UseExistingContext();
 	if (!glfwWindowShouldClose(window.get()))
     {
-		context.Clear();
+		
 		
 		float camera_period = 10;
 		float sin = std::sin(2 * 3.14 * t_sec / camera_period);
@@ -102,14 +102,21 @@ bool Renderer::render(float t_sec){
 		for (auto& pose : poses) {
 			GL::Mat4 view = pose.view * origin;
 			ovrManager.setRenderTarget(context, OVRManager::RenderTarget(eyeNumber));
-			if(eyeNumber == 0) context.Clear();
+			
+			if (eyeNumber == 0) {
+				glClearColor(1, 0, 0, 1);
+				context.Clear();
+				glClearColor(0, 0, 0, 1);
+
+			}
 			scene->render(context, *program, view, pose.proj);
 			eyeNumber++;
 		}
+
 		
 		if(poses.size() > 0){
 			//Draw to rift
-			bool renderResult = ovrManager.renderToRift();	
+			bool renderResult = ovrManager.renderToRift();
 			if (!renderResult) {
 				std::cout << "Rift display failed!" << std::endl;
 			}
@@ -123,7 +130,8 @@ bool Renderer::render(float t_sec){
 		//GL::Mat4 proj = poses[0].proj.Scale(GL::Vec3(1, -1, 1));
 		//scene->render(context, *program, view, proj);
 		if (poses.size() > 0) {
-			texToScreenRenderer->renderTextureToScreen(context, GL::Texture(ovrManager.getCurrentEyeBuffer()));
+			GLuint eyeTex = GL::Texture(ovrManager.getLastEyeTexture());
+			texToScreenRenderer->renderTextureToScreen(context, 1);// 
 		}
 		else {
 			GL::Mat4 view = GL::Mat4::LookAt(GL::Vec3(1, 1, 1), GL::Vec3(0, 0, 0), GL::Vec3(0, 1, 0)) * origin;
@@ -131,6 +139,8 @@ bool Renderer::render(float t_sec){
 			proj = proj.Scale(GL::Vec3(1, -1, 1));
 			scene->render(context, *program, view, proj);
 		}
+
+		
 
 		glfwSwapBuffers(window.get());
 

@@ -30,160 +30,29 @@
 # GLFW_LIBRARIES
 #
 
-find_path( GLFW_INCLUDE_DIR 
+
+
+find_path( OOGL_INCLUDE_DIR 
     NAMES
         GLFW/glfw3.h
-    HINTS
-        "${GLFW_LOCATION}/include"
-        "$ENV{GLFW_LOCATION}/include"
     PATHS
-        "$ENV{PROGRAMFILES}/GLFW/include"
-        "${OPENGL_INCLUDE_DIR}"
-        /usr/openwin/share/include
-        /usr/openwin/include
-        /usr/X11R6/include
-        /usr/include/X11
-        /opt/graphics/OpenGL/include
-        /opt/graphics/OpenGL/contrib/libglfw
-        /usr/local/include
-        /usr/include/GL
-        /usr/include
+        "$ENV{SHARED_LIBRARIES}/${TARGET_ARCHITECTURE}/include"
     DOC 
-        "The directory where GLFW/glfw3.h resides"
+        "The directory where GL/OOGL.hpp resides"
 )
 
-#
-# XXX: Do we still need to search for GL/glfw.h?
-#
-find_path( GLFW_INCLUDE_DIR 
+
+find_library( OOGL_LIBRARY 
     NAMES
-        GL/glfw.h
-    HINTS
-        "${GLFW_LOCATION}/include"
-        "$ENV{GLFW_LOCATION}/include"
+        glfw32
+        glfw32s 
+        glfw
+        glfw3
     PATHS
-        "$ENV{PROGRAMFILES}/GLFW/include"
-        "${OPENGL_INCLUDE_DIR}"
-        /usr/openwin/share/include
-        /usr/openwin/include
-        /usr/X11R6/include
-        /usr/include/X11
-        /opt/graphics/OpenGL/include
-        /opt/graphics/OpenGL/contrib/libglfw
-        /usr/local/include
-        /usr/include/GL
-        /usr/include
+        "$ENV{SHARED_LIBRARIES}/${TARGET_ARCHITECTURE}/lib"
     DOC 
-        "The directory where GL/glfw.h resides"
+        "The OOGL library"
 )
-
-if (WIN32)
-    if(CYGWIN)
-        find_library( GLFW_LIBRARY 
-            NAMES
-                glfw32
-            HINTS
-                "${GLFW_LOCATION}/lib"
-                "${GLFW_LOCATION}/lib/x64"
-                "$ENV{GLFW_LOCATION}/lib"
-            PATHS
-                "${OPENGL_LIBRARY_DIR}"
-                /usr/lib
-                /usr/lib/w32api
-                /usr/local/lib
-                /usr/X11R6/lib
-            DOC 
-                "The GLFW library"
-        )
-    else()
-        find_library( GLFW_LIBRARY
-            NAMES 
-                glfw32 
-                glfw32s 
-                glfw
-                glfw3
-            HINTS
-                "${GLFW_LOCATION}/lib"
-                "${GLFW_LOCATION}/lib/x64"
-                "${GLFW_LOCATION}/lib-msvc110"
-                "${GLFW_LOCATION}/lib-vc2012"
-                "$ENV{GLFW_LOCATION}/lib"
-                "$ENV{GLFW_LOCATION}/lib/x64"
-                "$ENV{GLFW_LOCATION}/lib-msvc110"
-                "$ENV{GLFW_LOCATION}/lib-vc2012"
-            PATHS
-                "$ENV{PROGRAMFILES}/GLFW/lib"
-                "${OPENGL_LIBRARY_DIR}"
-            DOC 
-                "The GLFW library"
-        )
-    endif()
-else ()
-    if (APPLE)
-        find_library( GLFW_LIBRARY glfw
-            NAMES 
-                glfw
-                glfw3
-            HINTS
-                "${GLFW_LOCATION}/lib"
-                "${GLFW_LOCATION}/lib/cocoa"
-                "$ENV{GLFW_LOCATION}/lib"
-                "$ENV{GLFW_LOCATION}/lib/cocoa"
-            PATHS
-                /usr/local/lib
-        )
-        set(GLFW_cocoa_LIBRARY "-framework Cocoa" CACHE STRING "Cocoa framework for OSX")
-        set(GLFW_corevideo_LIBRARY "-framework CoreVideo" CACHE STRING "CoreVideo framework for OSX")
-        set(GLFW_iokit_LIBRARY "-framework IOKit" CACHE STRING "IOKit framework for OSX")
-    else ()
-        # (*)NIX
-        
-        find_package(Threads REQUIRED)
-
-        find_package(X11 REQUIRED)
-        
-        if(NOT X11_Xrandr_FOUND)
-            message(FATAL_ERROR "Xrandr library not found - required for GLFW")
-        endif()
-
-        if(NOT X11_xf86vmode_FOUND)
-            message(FATAL_ERROR "xf86vmode library not found - required for GLFW")
-        endif()
-
-        if(NOT X11_Xcursor_FOUND)
-            message(FATAL_ERROR "Xcursor library not found - required for GLFW")
-        endif()
-
-        if(NOT X11_Xinerama_FOUND)
-            message(FATAL_ERROR "Xinerama library not found - required for GLFW")
-        endif()
-
-        list(APPEND GLFW_x11_LIBRARY "${X11_Xrandr_LIB}" "${X11_Xxf86vm_LIB}" "${X11_Xcursor_LIB}" "${X11_Xinerama_LIB}" "${CMAKE_THREAD_LIBS_INIT}" -lrt -lXi)
-
-        find_library( GLFW_LIBRARY
-            NAMES 
-                glfw
-                glfw3
-            HINTS
-                "${GLFW_LOCATION}/lib"
-                "$ENV{GLFW_LOCATION}/lib"
-                "${GLFW_LOCATION}/lib/x11"
-                "$ENV{GLFW_LOCATION}/lib/x11"
-            PATHS
-                /usr/lib64
-                /usr/lib
-                /usr/lib/${CMAKE_LIBRARY_ARCHITECTURE}
-                /usr/local/lib64
-                /usr/local/lib
-                /usr/local/lib/${CMAKE_LIBRARY_ARCHITECTURE}
-                /usr/openwin/lib
-                /usr/X11R6/lib
-            DOC 
-                "The GLFW library"
-        )
-    endif (APPLE)
-endif (WIN32)
-
 set( GLFW_FOUND "NO" )
 
 if(GLFW_INCLUDE_DIR)

@@ -12,8 +12,6 @@ class TextureToScreen{
 		GL::VertexArray vao;
 		GL::VertexBuffer vBuffer;
 
-		
-
 	public:
 		TextureToScreen();
 		void renderTextureToScreen(GL::Context& gl,GL::Texture tex);

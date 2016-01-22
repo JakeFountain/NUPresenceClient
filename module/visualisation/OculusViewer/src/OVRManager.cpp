@@ -174,13 +174,14 @@ bool OVRManager::renderToRift(){
 	viewScaleDesc.HmdToEyeViewOffset[1] = ViewOffset[1];
 
 	ovrResult result = ovr_SubmitFrame(session, 0, &viewScaleDesc, &layerList, 1);
+	lastEyeTexture = eyeBuffer[pTextureSet->CurrentIndex]->GetTexture();
 	pTextureSet->CurrentIndex = (pTextureSet->CurrentIndex + 1) % pTextureSet->TextureCount;
 	return result == ovrSuccess;
 }
 
 
-GLuint OVRManager::getCurrentEyeBuffer() {
-	return eyeBuffer[pTextureSet->CurrentIndex]->GetTexture();
+GLuint OVRManager::getLastEyeTexture() {
+	return lastEyeTexture;
 }
    
 OVRManager::~OVRManager(){

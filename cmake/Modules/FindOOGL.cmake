@@ -30,23 +30,12 @@
 # OOGL_LIBRARIES
 #
 
+
 find_path( OOGL_INCLUDE_DIR 
     NAMES
         GL/OOGL.hpp
-    HINTS
-        "${OOGL_LOCATION}/include"
-        "$ENV{OOGL_LOCATION}/include"
     PATHS
-        "$ENV{PROGRAMFILES}/GLFW/include"
-        "${OPENGL_INCLUDE_DIR}"
-        /usr/openwin/share/include
-        /usr/openwin/include
-        /usr/X11R6/include
-        /usr/include/X11
-        /opt/graphics/OpenGL/include
-        /usr/local/include
-        /usr/include/GL
-        /usr/include
+        "$ENV{SHARED_LIBRARIES}/${TARGET_ARCHITECTURE}/include"
     DOC 
         "The directory where GL/OOGL.hpp resides"
 )
@@ -54,17 +43,9 @@ find_path( OOGL_INCLUDE_DIR
 
 find_library( OOGL_LIBRARY 
     NAMES
-        OOGL
-    HINTS
-        "${OOGL_LOCATION}/lib"
-        "${OOGL_LOCATION}/lib/x64"
-        "$ENV{OOGL_LOCATION}/lib"
+        OOGL-d
     PATHS
-        "${OPENGL_LIBRARY_DIR}"
-        /usr/lib
-        /usr/lib/w32api
-        /usr/local/lib
-        /usr/X11R6/lib
+        "$ENV{SHARED_LIBRARIES}/${TARGET_ARCHITECTURE}/lib"
     DOC 
         "The OOGL library"
 )

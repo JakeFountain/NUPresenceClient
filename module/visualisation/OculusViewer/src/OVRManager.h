@@ -25,14 +25,13 @@ public:
 	};
 
     OVRManager();
+	GLuint getLastEyeTexture();
 	~OVRManager();
 
 	bool init();
 
 	std::vector<EyePose> getCurrentPoses();
 	bool renderToRift();
-	void drawMirror(GL::Context & gl);
-	GLuint getCurrentEyeBuffer();
 	ovrSizei getResolution();
 	ovrSizei getMirrorResolution();
 
@@ -51,6 +50,7 @@ private:
 	OVR::Sizei bufferSize;
 
  	ovrSwapTextureSet* pTextureSet;
+	GLuint lastEyeTexture;
 
 	std::vector<std::unique_ptr<GL::Framebuffer>> eyeBuffer;
 	std::unique_ptr<GL::Framebuffer> mirrorBuffer;

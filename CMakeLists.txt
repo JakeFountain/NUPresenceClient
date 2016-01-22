@@ -1,5 +1,7 @@
 CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
 
+set(TARGET_ARCHITECTURE "x64") # Win32 or x64
+
 # Maps to a solution file (Tutorial.sln). The solution will
 # have all targets (exe, lib, dll) as projects (.vcproj)
 PROJECT(NUPresenceClient)
@@ -11,7 +13,6 @@ SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS ON)
 
 # We use additional modules that cmake needs to know about
 SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
-
 
 # Initialise NUClear
 ADD_SUBDIRECTORY(nuclear)
