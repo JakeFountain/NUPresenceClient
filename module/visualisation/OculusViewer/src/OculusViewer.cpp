@@ -19,6 +19,7 @@
 
 #include "OculusViewer.h"
 
+#include "message/input/proto/ImageFragment.pb.h"
 
 // #include "extension/Configuration.h"
 
@@ -26,6 +27,7 @@ namespace module {
 namespace visualisation {
 
     // using extension::Configuration;
+    using message::input::proto::ImageFragment;
 
     OculusViewer::OculusViewer(std::unique_ptr<NUClear::Environment> environment)
     : Reactor(std::move(environment)) {
