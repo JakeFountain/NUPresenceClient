@@ -85,21 +85,17 @@ namespace visualisation {
 			}
 
 			robotEyeTexture = std::make_unique<GL::Texture>();
-			
 
 		}
 
 		int rWidth =  worldState.latestImage.width * 2 ;
 		int rHeight = worldState.latestImage.height;
 
-		robotEyeTexture->Image2D(worldState.latestImage.data.data(), GL::DataType::UnsignedByte, GL::Format::Red, rWidth, rHeight, GL::InternalFormat::Red);
-		robotEyeTexture->SetWrapping(GL::Wrapping::ClampEdge);
-		robotEyeTexture->SetFilters(GL::Filter::Nearest,GL::Filter::Nearest);
+
 
 		GL::Context context = GL::Context::UseExistingContext();
 		if (!glfwWindowShouldClose(window.get()))
 	    {
-			
 			
 			float camera_period = 10;
 			float sin = std::sin(2 * 3.14 * t_sec / camera_period);
@@ -147,9 +143,7 @@ namespace visualisation {
 				//texToScreenRenderer->renderTextureToScreen(context, eyeTex);
 
 				//Test robot image
-				//texToScreenRenderer->renderTextureToScreen(context, *robotEyeTexture, worldState.latestImage);
-				//texToScreenRenderer->renderTextureToScreen(context, 2);
-
+				texToScreenRenderer->renderTextureToScreen(context, *robotEyeTexture, worldState.latestImage.format, worldState.latestImage.width, worldState.latestImage.height);
 
 				//For now re-render
 				//GL::Mat4 view = poses[0].view;
@@ -157,13 +151,10 @@ namespace visualisation {
 				//scene->render(context, *program, view, proj);
 			}
 			else {
-				//GL::Mat4 view = GL::Mat4::LookAt(GL::Vec3(1, 1, 1), GL::Vec3(0, 0, 0), GL::Vec3(0, 1, 0)) * origin;
-				//scene->render(context, *program, view, proj);
-
-				//texToScreenRenderer->renderTextureToScreen(context, 2, dummy);
-				
 				texToScreenRenderer->renderTextureToScreen(context, *robotEyeTexture, worldState.latestImage.format, worldState.latestImage.width, worldState.latestImage.height);
 
+				//GL::Mat4 view = GL::Mat4::LookAt(GL::Vec3(1, 1, 1), GL::Vec3(0, 0, 0), GL::Vec3(0, 1, 0)) * origin;
+				//scene->render(context, *program, view, proj);
 			}
 
 

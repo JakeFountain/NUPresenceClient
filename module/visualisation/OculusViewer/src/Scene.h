@@ -16,8 +16,11 @@ namespace visualisation {
 	    Scene();
 
 	    void render(GL::Context& glContext, GL::Program& shaderProgram, GL::Mat4 view, GL::Mat4 projection);
+    	void setRobotImage(const WorldState::Image& image);
+
 	private:
 		GameObject rootObject;
+		GL::Texture robotEyeTexture;
 	};
 
 }
