@@ -2,6 +2,9 @@
 #include "Scene.h"
 
 
+namespace module {
+namespace visualisation {
+
     Scene::Scene(){
 		// float vertices[] = {	
 	 //        -0.75f,  0.5f,
@@ -26,3 +29,6 @@
 	    rootObject.render(glContext, GL::Mat4(), view, projection, shaderProgram);
 
     }
+
+}
+}

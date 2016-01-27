@@ -23,13 +23,19 @@
 #include <nuclear>
 
 #include "Renderer.h"
+#include "WorldState.h"
 
 namespace module {
 namespace visualisation {
 
     class OculusViewer : public NUClear::Reactor {
 
-    public:
+	public:
+
+		//Y0 B0 Y1 R0 Y2 B1 Y3 R1
+
+		//(Y0 B0 R0), (Y1 B0 R0) (Y2 B1 R1) (Y3 B1 R1)
+
         /// @brief Called by the powerplant to build and setup the OculusViewer reactor.
         explicit OculusViewer(std::unique_ptr<NUClear::Environment> environment); 
 

@@ -31,28 +31,48 @@ namespace visualisation {
 
     OculusViewer::OculusViewer(std::unique_ptr<NUClear::Environment> environment)
     : Reactor(std::move(environment)) {
+		//Record start time
 		start = NUClear::clock::now();
 
-        // on<Configuration>("OculusViewer.yaml").then([this] (const Configuration& config) {
-        //     // Use configuration here from file OculusViewer.yaml
-        // });
-
+		//Setup and monitor network status
 		auto networkConfig = std::make_unique<NUClear::message::NetworkConfiguration>();
-		networkConfig->name = "nupresenseclient";
+		networkConfig->name = "nupresenceclient";
 		networkConfig->multicastGroup = "239.226.152.162";
 		networkConfig->multicastPort = 7447;
 
 		emit<Scope::DIRECT>(networkConfig);
 
-		on<Network<ImageFragment>>().then([this](const NetworkSource& source, const ImageFragment& fragment) {
-			std::cout << source.name << std::endl;
+		on<Trigger<NUClear::message::NetworkJoin>>().then([this](const NUClear::message::NetworkJoin& join) {
+			std::cout << "Connected to " << join.name << std::endl;
 		});
 
-		on<Always>().then([this] {
-			auto now = NUClear::clock::now();
-			float time_elapsed_seconds = std::chrono::duration_cast<std::chrono::microseconds>(now - start).count() / 1e6;
-			if (!renderer.render(time_elapsed_seconds)) {
-				powerplant.shutdown();
+		on<Trigger<NUClear::message::NetworkLeave>>().then([this](const NUClear::message::NetworkLeave& leave) {
+			std::cout << "Disconnected from " << leave.name << std::endl;
+		});
+
+		//Process images
+		on<Network<ImageFragment>>().then([this](const NetworkSource& source, const ImageFragment& fragment) {
+			std::cout << source.name << std::endl;
+			fragment.data().data();
+
+			auto worldState = std::make_unique<WorldState>();
+			worldState->latestImage.width = fragment.dimensions().x();
+			worldState->latestImage.height = fragment.dimensions().y();
+			worldState->latestImage.data.resize(fragment.data().size());
+			std::memcpy(worldState->latestImage.data.data(), fragment.data().data(), fragment.data().size());
+
+			emit(worldState);
+		});
+
+		//Main render loop
+		on<Always, Optional<With<WorldState>>>().then([this] (const std::shared_ptr<const WorldState> worldState) {
+			if (worldState) {
+
+				auto now = NUClear::clock::now();
+				float time_elapsed_seconds = std::chrono::duration_cast<std::chrono::microseconds>(now - start).count() / 1e6;
+				if (!renderer.render(time_elapsed_seconds, *worldState)) {
+					powerplant.shutdown();
+				}
 			}
 		});
 

@@ -7,54 +7,60 @@
 #include <memory>
 #include "TextureToScreen.h"
 
-#ifndef NUPRESENCE_OVR_MANAGER
-#define NUPRESENCE_OVR_MANAGER
+#ifndef MODULES_VISUALISATION_NUPRESENCE_OVR_MANAGER
+#define MODULES_VISUALISATION_NUPRESENCE_OVR_MANAGER
 
 
-struct EyePose{
-	GL::Mat4 view;
-	GL::Mat4 proj;
-};
+namespace module {
+namespace visualisation {
 
-class OVRManager {
-public:
-	enum RenderTarget {
-		LEFT_EYE = 0,
-		RIGHT_EYE = 1,
-		MIRROR = 2
+	struct EyePose{
+		GL::Mat4 view;
+		GL::Mat4 proj;
 	};
 
-    OVRManager();
-	GLuint getLastEyeTexture();
-	~OVRManager();
+	class OVRManager {
+	public:
+		enum RenderTarget {
+			LEFT_EYE = 0,
+			RIGHT_EYE = 1,
+			MIRROR = 2
+		};
 
-	bool init();
+	    OVRManager();
+		GLuint getLastEyeTexture();
+		~OVRManager();
 
-	std::vector<EyePose> getCurrentPoses();
-	bool renderToRift();
-	ovrSizei getResolution();
-	ovrSizei getMirrorResolution();
+		bool init();
 
-	bool createEyeBuffers();
+		std::vector<EyePose> getCurrentPoses();
+		bool renderToRift();
+		ovrSizei getResolution();
+		ovrSizei getMirrorResolution();
 
-	void setRenderTarget(GL::Context & gl, OVRManager::RenderTarget target);
+		bool createEyeBuffers();
 
-private:
-	bool riftPresent;
-    ovrSession session;
-	ovrGraphicsLuid luid;
-	ovrHmdDesc hmdDesc;
-	ovrEyeRenderDesc EyeRenderDesc[2];
- 	ovrVector3f ViewOffset[2];
- 	ovrPosef EyeRenderPose[2];
-	OVR::Sizei bufferSize;
+		void setRenderTarget(GL::Context & gl, OVRManager::RenderTarget target);
 
- 	ovrSwapTextureSet* pTextureSet;
-	int lastEyeTextureIndex;
+	private:
+		bool riftPresent;
+	    ovrSession session;
+		ovrGraphicsLuid luid;
+		ovrHmdDesc hmdDesc;
+		ovrEyeRenderDesc EyeRenderDesc[2];
+	 	ovrVector3f ViewOffset[2];
+	 	ovrPosef EyeRenderPose[2];
+		OVR::Sizei bufferSize;
 
-	std::vector<std::unique_ptr<GL::Framebuffer>> eyeBuffer;
-	std::unique_ptr<GL::Framebuffer> mirrorBuffer;
+	 	ovrSwapTextureSet* pTextureSet;
+		int lastEyeTextureIndex;
 
-};
+		std::vector<std::unique_ptr<GL::Framebuffer>> eyeBuffer;
+		std::unique_ptr<GL::Framebuffer> mirrorBuffer;
+
+	};
+
+}
+}
 
 #endif
