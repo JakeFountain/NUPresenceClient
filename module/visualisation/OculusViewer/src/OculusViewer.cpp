@@ -37,6 +37,17 @@ namespace visualisation {
         //     // Use configuration here from file OculusViewer.yaml
         // });
 
+		auto networkConfig = std::make_unique<NUClear::message::NetworkConfiguration>();
+		networkConfig->name = "nupresenseclient";
+		networkConfig->multicastGroup = "239.226.152.162";
+		networkConfig->multicastPort = 7447;
+
+		emit<Scope::DIRECT>(networkConfig);
+
+		on<Network<ImageFragment>>().then([this](const NetworkSource& source, const ImageFragment& fragment) {
+			std::cout << source.name << std::endl;
+		});
+
 		on<Always>().then([this] {
 			auto now = NUClear::clock::now();
 			float time_elapsed_seconds = std::chrono::duration_cast<std::chrono::microseconds>(now - start).count() / 1e6;
