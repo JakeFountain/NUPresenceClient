@@ -1,5 +1,6 @@
 
 #include <GL\OOGL.hpp>
+#include "WorldState.h"
 
 #ifndef MODULES_VISUALISATION_TEXTURE_TO_SCREEN_H
 #define MODULES_VISUALISATION_TEXTURE_TO_SCREEN_H
@@ -18,7 +19,7 @@ namespace visualisation {
 
 		public:
 			TextureToScreen();
-			void renderTextureToScreen(GL::Context & gl, GLuint tex);
+			void renderTextureToScreen(GL::Context & gl, GLuint tex, const WorldState::Image::Format& format = WorldState::Image::Format::OTHER, int width = 0, int height = 0);
 	};
 
 }

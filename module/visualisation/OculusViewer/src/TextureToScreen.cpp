@@ -1,29 +1,15 @@
 
 #include "TextureToScreen.h"
 #include <iostream>
+#include <fstream>
+#include "utility/file/fileutil.h"
 
 namespace module {
 namespace visualisation {
 
 	TextureToScreen::TextureToScreen():
-		vert(GL::ShaderType::Vertex, GLSL(
-					in vec2 pos;
-					in vec2 texcoord;
-					out vec2 Texcoord;
-					void main() {
-						Texcoord = texcoord;
-						gl_Position = vec4(pos,0,1);
-					}
-				)),
-		frag(GL::ShaderType::Fragment, GLSL(
-					in vec2 Texcoord;
-					out vec4 outColor;
-					uniform sampler2D tex;
-					uniform int format;
-					void main() {
-						outColor = texture(tex, vec2(Texcoord.x, Texcoord.y));
-					}
-				)),
+		vert(GL::ShaderType::Vertex, utility::file::loadFromFile("../../shaders/texToScreen.vert")),
+		frag(GL::ShaderType::Fragment, utility::file::loadFromFile("../../shaders/texToScreen.frag")),
 		shader(frag, vert),
 		vao()
 	{
@@ -40,12 +26,16 @@ namespace visualisation {
 
 	}
 
-	void TextureToScreen::renderTextureToScreen(GL::Context& gl, GLuint tex){
+	void TextureToScreen::renderTextureToScreen(GL::Context& gl, GLuint tex, const WorldState::Image::Format& format, int width, int height){
 
 		vao.BindAttribute(shader.GetAttribute( "pos" ), vBuffer, GL::Type::Float, 2, sizeof(float) * 4, 0 );
 		vao.BindAttribute(shader.GetAttribute( "texcoord" ), vBuffer, GL::Type::Float, 2, sizeof(float) * 4, sizeof(float) * 2 );
 		
 		gl.UseProgram(shader);
+
+		shader.SetUniform("format", int(format));
+		shader.SetUniform("imageWidth", int(width));
+		shader.SetUniform("imageHeight", int(height));
 
 		shader.SetUniform("tex", 0);
 		glActiveTexture(GL_TEXTURE0 + 0);

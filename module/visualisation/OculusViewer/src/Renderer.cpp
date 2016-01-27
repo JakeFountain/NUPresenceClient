@@ -92,7 +92,9 @@ namespace visualisation {
 		int rWidth =  worldState.latestImage.width * 2 ;
 		int rHeight = worldState.latestImage.height;
 
-		robotEyeTexture->Image2D(worldState.latestImage.data.data(), GL::DataType::UnsignedByte, GL::Format::Red, rWidth, rHeight, GL::InternalFormat::RGBA);
+		robotEyeTexture->Image2D(worldState.latestImage.data.data(), GL::DataType::UnsignedByte, GL::Format::Red, rWidth, rHeight, GL::InternalFormat::Red);
+		robotEyeTexture->SetWrapping(GL::Wrapping::ClampEdge);
+		robotEyeTexture->SetFilters(GL::Filter::Nearest,GL::Filter::Nearest);
 
 		GL::Context context = GL::Context::UseExistingContext();
 		if (!glfwWindowShouldClose(window.get()))
@@ -145,7 +147,7 @@ namespace visualisation {
 				//texToScreenRenderer->renderTextureToScreen(context, eyeTex);
 
 				//Test robot image
-				texToScreenRenderer->renderTextureToScreen(context, *robotEyeTexture);
+				//texToScreenRenderer->renderTextureToScreen(context, *robotEyeTexture, worldState.latestImage);
 				//texToScreenRenderer->renderTextureToScreen(context, 2);
 
 
@@ -155,8 +157,13 @@ namespace visualisation {
 				//scene->render(context, *program, view, proj);
 			}
 			else {
-				GL::Mat4 view = GL::Mat4::LookAt(GL::Vec3(1, 1, 1), GL::Vec3(0, 0, 0), GL::Vec3(0, 1, 0)) * origin;
-				scene->render(context, *program, view, proj);
+				//GL::Mat4 view = GL::Mat4::LookAt(GL::Vec3(1, 1, 1), GL::Vec3(0, 0, 0), GL::Vec3(0, 1, 0)) * origin;
+				//scene->render(context, *program, view, proj);
+
+				//texToScreenRenderer->renderTextureToScreen(context, 2, dummy);
+				
+				texToScreenRenderer->renderTextureToScreen(context, *robotEyeTexture, worldState.latestImage.format, worldState.latestImage.width, worldState.latestImage.height);
+
 			}
 
 

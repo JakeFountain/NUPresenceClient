@@ -59,6 +59,7 @@ namespace visualisation {
 			worldState->latestImage.width = fragment.dimensions().x();
 			worldState->latestImage.height = fragment.dimensions().y();
 			worldState->latestImage.data.resize(fragment.data().size());
+			worldState->latestImage.format = WorldState::Image::Format::YCBCR_422;
 			std::memcpy(worldState->latestImage.data.data(), fragment.data().data(), fragment.data().size());
 
 			emit(worldState);
