@@ -20,7 +20,13 @@ namespace visualisation {
 		rootObject.addChild(monkey);
     }
 
-    void Scene::render(GL::Context& glContext, GL::Program& shaderProgram, GL::Mat4 view, GL::Mat4 projection){
+    void Scene::render(GL::Context& glContext, GL::Program& shaderProgram, GL::Mat4 view, GL::Mat4 projection, float t){
+    	
+		float camera_period = 10;
+		float sin = std::sin(2 * 3.14 * t / camera_period);
+		float cos = std::cos(2 * 3.14 * t / camera_period);
+		monkey->transform = GL::Mat4::LookAt(GL::Vec3(0, 0, 0), GL::Vec3(sin, cos, 0), GL::Vec3(0, 0, 1));
+
     	glContext.UseProgram(shaderProgram);
 
 	    rootObject.render(glContext, GL::Mat4(), view, projection, shaderProgram);
@@ -34,6 +40,12 @@ namespace visualisation {
 		int rHeight = image.height;
 
 		screen->meshes[0]->texture.Image2D(image.data.data(), GL::DataType::UnsignedByte, GL::Format::Red, rWidth, rHeight, GL::InternalFormat::Red);
+		screen->meshes[0]->texFormat = image.format;
+		screen->meshes[0]->texWidth = image.width;
+		screen->meshes[0]->texWidth = image.height;
+
+		screen->meshes[0]->texture.SetWrapping(GL::Wrapping::ClampEdge);
+		screen->meshes[0]->texture.SetFilters(GL::Filter::Nearest, GL::Filter::Nearest);
 
     }
 

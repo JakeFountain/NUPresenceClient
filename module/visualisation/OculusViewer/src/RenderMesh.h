@@ -1,5 +1,6 @@
 
 #include <GL/OOGL.hpp>
+#include "WorldState.h"
 
 #ifndef MODULES_VISUALISATION_NUPRESENCE_RENDER_MESH_H
 #define MODULES_VISUALISATION_NUPRESENCE_RENDER_MESH_H
@@ -17,6 +18,10 @@ namespace visualisation {
 		GL::Texture texture;
 		GL::VertexArray vao;
 		GL::VertexBuffer vBuffer;
+
+		WorldState::Image::Format texFormat = WorldState::Image::Format::OTHER;
+		int texWidth = 0;
+		int texHeight = 0;
 	};
 
 }

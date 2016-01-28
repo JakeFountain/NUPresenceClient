@@ -25,6 +25,9 @@ namespace visualisation {
 	{
 		image.Load(textureName);
 		texture = GL::Texture(image);
+		texFormat = WorldState::Image::Format::OTHER;
+		texWidth = image.GetWidth();
+		texHeight = image.GetHeight();
 	}
 
 
@@ -36,6 +39,10 @@ namespace visualisation {
 		
 		shader.SetUniform("modelview", modelview);
 		shader.SetUniform("projection", projection);
+
+		shader.SetUniform("format",texFormat);
+		shader.SetUniform("imageWidth",texWidth);
+		shader.SetUniform("imageHeight",texHeight);
 		
 		gl.BindTexture(texture, 0);
 		shader.SetUniform("tex", 0);

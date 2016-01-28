@@ -16,7 +16,7 @@ namespace visualisation {
 	public:
 	    Scene();
 
-	    void render(GL::Context& glContext, GL::Program& shaderProgram, GL::Mat4 view, GL::Mat4 projection);
+	    void render(GL::Context& glContext, GL::Program& shaderProgram, GL::Mat4 view, GL::Mat4 projection, float t);
     	void setRobotImage(const WorldState::Image& image);
 
 		GLuint getRobotEyeTexture();
