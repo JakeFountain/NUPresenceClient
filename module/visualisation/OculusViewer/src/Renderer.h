@@ -31,7 +31,6 @@ namespace visualisation {
 
 		std::unique_ptr<TextureToScreen> texToScreenRenderer;
 
-		std::unique_ptr<GL::Texture> robotEyeTexture;
 
 		std::unique_ptr<Scene> scene;
 		std::unique_ptr<GL::Shader> vert;

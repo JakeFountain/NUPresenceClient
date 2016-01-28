@@ -29,12 +29,16 @@ namespace visualisation {
     void Scene::setRobotImage(const WorldState::Image& image){
 
     	//TODO: change this to work with other image formats
-		int rWidth =  worldState.latestImage.width * 2;
-		int rHeight = worldState.latestImage.height;
+		int rWidth = image.width * 2;
+		int rHeight = image.height;
 
 		robotEyeTexture.Image2D(image.data.data(), GL::DataType::UnsignedByte, GL::Format::Red, rWidth, rHeight, GL::InternalFormat::Red);
 
     }
+
+	GLuint Scene::getRobotEyeTexture() {
+		return robotEyeTexture;
+	}
 
 }
 }

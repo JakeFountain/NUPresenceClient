@@ -84,7 +84,6 @@ namespace visualisation {
 				throw e;
 			}
 
-			robotEyeTexture = std::make_unique<GL::Texture>();
 
 		}
 
@@ -143,7 +142,7 @@ namespace visualisation {
 				//texToScreenRenderer->renderTextureToScreen(context, eyeTex);
 
 				//Test robot image
-				texToScreenRenderer->renderTextureToScreen(context, *robotEyeTexture, worldState.latestImage.format, worldState.latestImage.width, worldState.latestImage.height);
+				texToScreenRenderer->renderTextureToScreen(context, scene->getRobotEyeTexture(), worldState.latestImage.format, worldState.latestImage.width, worldState.latestImage.height);
 
 				//For now re-render
 				//GL::Mat4 view = poses[0].view;
@@ -151,7 +150,7 @@ namespace visualisation {
 				//scene->render(context, *program, view, proj);
 			}
 			else {
-				texToScreenRenderer->renderTextureToScreen(context, *robotEyeTexture, worldState.latestImage.format, worldState.latestImage.width, worldState.latestImage.height);
+				texToScreenRenderer->renderTextureToScreen(context, scene->getRobotEyeTexture(), worldState.latestImage.format, worldState.latestImage.width, worldState.latestImage.height);
 
 				//GL::Mat4 view = GL::Mat4::LookAt(GL::Vec3(1, 1, 1), GL::Vec3(0, 0, 0), GL::Vec3(0, 1, 0)) * origin;
 				//scene->render(context, *program, view, proj);
