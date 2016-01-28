@@ -17,7 +17,7 @@ namespace visualisation {
 	}
 
 	    
-	bool Renderer::render(float t_sec, const WorldState& worldState){
+	bool Renderer::render(float t_sec, const std::shared_ptr<const WorldState> worldState){
 		
 		if(!window){
 			width = 1920 ;
@@ -87,7 +87,9 @@ namespace visualisation {
 
 		}
 
-		scene->setRobotImage(worldState.latestImage);
+		if(worldState){
+			scene->setRobotImage(worldState->latestImage);
+		}
 
 		GL::Context context = GL::Context::UseExistingContext();
 		if (!glfwWindowShouldClose(window.get()))
@@ -139,16 +141,18 @@ namespace visualisation {
 				//texToScreenRenderer->renderTextureToScreen(context, eyeTex);
 
 				//Test robot image
-				texToScreenRenderer->renderTextureToScreen(context, scene->getRobotEyeTexture(), worldState.latestImage.format, worldState.latestImage.width, worldState.latestImage.height);
-
+				if(worldState){
+					texToScreenRenderer->renderTextureToScreen(context, scene->getRobotEyeTexture(), worldState->latestImage.format, worldState->latestImage.width, worldState->latestImage.height);
+				}
 				//For now re-render
 				//GL::Mat4 view = poses[0].view;
 				//view = view * origin;
 				//scene->render(context, *program, view, proj);
 			}
 			else {
-				texToScreenRenderer->renderTextureToScreen(context, scene->getRobotEyeTexture(), worldState.latestImage.format, worldState.latestImage.width, worldState.latestImage.height);
-
+				if(worldState){
+					texToScreenRenderer->renderTextureToScreen(context, scene->getRobotEyeTexture(), worldState->latestImage.format, worldState->latestImage.width, worldState->latestImage.height);
+				}
 				//GL::Mat4 view = GL::Mat4::LookAt(GL::Vec3(1, 1, 1), GL::Vec3(0, 0, 0), GL::Vec3(0, 1, 0)) * origin;
 				//scene->render(context, *program, view, proj);
 			}

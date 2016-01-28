@@ -5,16 +5,13 @@
 namespace module {
 namespace visualisation {
 
-    Scene::Scene():robotEyeTexture(){
-		
-		robotEyeTexture.SetWrapping(GL::Wrapping::ClampEdge);
-		robotEyeTexture.SetFilters(GL::Filter::Nearest, GL::Filter::Nearest);
+    Scene::Scene(){
 
 		monkey = std::make_shared<GameObject>(GL::Mat4().Scale(GL::Vec3(1,1,1)));
 		screen = std::make_shared<GameObject>();
 		try {
-			monkey->addMesh(std::make_shared<RenderMesh>("../../../assets/monkey.obj", "../../../assets/monkey_texture2.png"));
-			screen->addMesh(std::make_shared<RenderMesh>("../../../assets/screen.obj", "../../../assets/monkey_texture2.png"));
+			monkey->addMesh(std::make_shared<RenderMesh>("../../../assets/monkey.obj", "../../assets/monkey_texture2.png"));
+			screen->addMesh(std::make_shared<RenderMesh>("../../../assets/screen.obj", "../../assets/monkey_texture2.png"));
 		} catch (GL::FileException e) {
 			std::cout << "File exception! " << std::endl;
 		}
@@ -36,12 +33,12 @@ namespace visualisation {
 		int rWidth = image.width * 2;
 		int rHeight = image.height;
 
-		robotEyeTexture.Image2D(image.data.data(), GL::DataType::UnsignedByte, GL::Format::Red, rWidth, rHeight, GL::InternalFormat::Red);
+		screen->meshes[0]->texture.Image2D(image.data.data(), GL::DataType::UnsignedByte, GL::Format::Red, rWidth, rHeight, GL::InternalFormat::Red);
 
     }
 
 	GLuint Scene::getRobotEyeTexture() {
-		return robotEyeTexture;
+		return screen->meshes[0]->texture;
 	}
 
 }

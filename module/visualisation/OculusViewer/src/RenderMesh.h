@@ -12,13 +12,11 @@ namespace visualisation {
 		RenderMesh::RenderMesh(const RenderMesh& m);
 	    RenderMesh(std::string modelName, std::string textureName);
 	    void render(GL::Context& gl, GL::Mat4 modelview, GL::Mat4 projection, GL::Program& shader);
-	private:
 		GL::Mesh mesh;
-		GL::Texture texture;
 		GL::Image image;
+		GL::Texture texture;
 		GL::VertexArray vao;
 		GL::VertexBuffer vBuffer;
-
 	};
 
 }

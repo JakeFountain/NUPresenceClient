@@ -23,7 +23,6 @@ namespace visualisation {
 
 	private:
 		GameObject rootObject;
-		GL::Texture robotEyeTexture;
 
 		std::shared_ptr<GameObject> monkey;
 		std::shared_ptr<GameObject> screen;

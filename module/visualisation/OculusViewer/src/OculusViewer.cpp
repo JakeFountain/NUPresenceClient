@@ -67,13 +67,11 @@ namespace visualisation {
 
 		//Main render loop
 		on<Always, Optional<With<WorldState>>>().then([this] (const std::shared_ptr<const WorldState> worldState) {
-			if (worldState) {
 
-				auto now = NUClear::clock::now();
-				float time_elapsed_seconds = std::chrono::duration_cast<std::chrono::microseconds>(now - start).count() / 1e6;
-				if (!renderer.render(time_elapsed_seconds, *worldState)) {
-					powerplant.shutdown();
-				}
+			auto now = NUClear::clock::now();
+			float time_elapsed_seconds = std::chrono::duration_cast<std::chrono::microseconds>(now - start).count() / 1e6;
+			if (!renderer.render(time_elapsed_seconds, worldState)) {
+				powerplant.shutdown();
 			}
 		});
 

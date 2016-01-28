@@ -40,6 +40,7 @@ FUNCTION(NUCLEAR_MODULE)
             DEPENDS ${data_file}
             COMMENT "Copying updated data file ${data_file}"
         )
+        SET_SOURCE_FILES_PROPERTIES(${output_file} PROPERTIES GENERATED true)
 
     ENDFOREACH(data_file)
 

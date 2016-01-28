@@ -20,7 +20,7 @@ namespace visualisation {
 	class Renderer {
 	public:
 	    Renderer();
-	    bool render(float t_sec, const WorldState& worldState);
+	    bool render(float t_sec, const std::shared_ptr<const WorldState> worldState);
 	private:
 		//std::unique_ptr<GL::Window> window;
 		std::unique_ptr<GLFWwindow,std::function<void(GLFWwindow*)>> window;
