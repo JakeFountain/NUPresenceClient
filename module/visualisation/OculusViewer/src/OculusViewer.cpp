@@ -52,7 +52,7 @@ namespace visualisation {
 
 		//Process images
 		on<Network<ImageFragment>>().then([this](const NetworkSource& source, const ImageFragment& fragment) {
-			std::cout << source.name << std::endl;
+			std::cout << "Image received from : " << source.name << std::endl;
 			fragment.data().data();
 
 			auto worldState = std::make_unique<WorldState>();

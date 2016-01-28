@@ -87,10 +87,7 @@ namespace visualisation {
 
 		}
 
-		int rWidth =  worldState.latestImage.width * 2 ;
-		int rHeight = worldState.latestImage.height;
-
-
+		scene->setRobotImage(worldState.latestImage);
 
 		GL::Context context = GL::Context::UseExistingContext();
 		if (!glfwWindowShouldClose(window.get()))

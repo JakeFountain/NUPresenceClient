@@ -5,6 +5,7 @@
 #include <vector>
 #include <iostream>
 #include "RenderMesh.h"
+#include <memory>
 
 
 #ifndef MODULES_VISUALISATION_NUPRESENCE_GAME_OBJECT_H
@@ -15,19 +16,19 @@ namespace visualisation {
 
 	class GameObject {
 	public:
-		std::vector<GameObject> children;
-		std::vector<RenderMesh> meshes;
+		std::vector<std::shared_ptr<GameObject>> children;
+		std::vector<std::shared_ptr<RenderMesh>> meshes;
 		// std::vector<Light> lights;
 		GL::Mat4 transform;
 
 		GameObject(GL::Mat4 t = GL::Mat4()) : transform(t){};	
 		~GameObject(){};	
 		
-		void addMesh(RenderMesh& mesh){
+		void addMesh(const std::shared_ptr<RenderMesh>& mesh){
 			meshes.push_back(mesh);
 		}
 		
-		void addChild(GameObject& child){
+		void addChild(const std::shared_ptr<GameObject>& child){
 			children.push_back(child);
 		}
 
@@ -39,11 +40,11 @@ namespace visualisation {
 			GL::Mat4 model = prevModel * transform;
 			GL::Mat4 modelview = view * model;
 			for(auto& child : children){
-				child.render(gl, model, view, projection, shader);
+				child->render(gl, model, view, projection, shader);
 			}
 
 			for(auto& mesh : meshes){
-				mesh.render(gl, modelview, projection, shader);
+				mesh->render(gl, modelview, projection, shader);
 			}
 
 			// for(auto& light : lights){

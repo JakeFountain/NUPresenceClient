@@ -10,12 +10,16 @@ namespace visualisation {
 		robotEyeTexture.SetWrapping(GL::Wrapping::ClampEdge);
 		robotEyeTexture.SetFilters(GL::Filter::Nearest, GL::Filter::Nearest);
 
-		GameObject monkey(GL::Mat4().Scale(GL::Vec3(1,1,1)));
+		monkey = std::make_shared<GameObject>(GL::Mat4().Scale(GL::Vec3(1,1,1)));
+		screen = std::make_shared<GameObject>();
 		try {
-			monkey.addMesh(RenderMesh("../../../assets/monkey.obj", "../../../assets/monkey_texture2.png"));
+			monkey->addMesh(std::make_shared<RenderMesh>("../../../assets/monkey.obj", "../../../assets/monkey_texture2.png"));
+			screen->addMesh(std::make_shared<RenderMesh>("../../../assets/screen.obj", "../../../assets/monkey_texture2.png"));
 		} catch (GL::FileException e) {
 			std::cout << "File exception! " << std::endl;
 		}
+
+		rootObject.addChild(screen);
 		rootObject.addChild(monkey);
     }
 
