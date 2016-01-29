@@ -112,13 +112,13 @@ namespace visualisation {
 				//texToScreenRenderer->renderTextureToScreen(context, eyeTex);
 
 				//Test robot image
-				if(worldState){
-					texToScreenRenderer->renderTextureToScreen(context, scene->getRobotEyeTexture(), worldState->latestImage.format, worldState->latestImage.width, worldState->latestImage.height);
-				}
+				//if(worldState){
+				//	texToScreenRenderer->renderTextureToScreen(context, scene->getRobotEyeTexture(), worldState->latestImage.format, worldState->latestImage.width, worldState->latestImage.height);
+				//}
 				//For now re-render
-				//GL::Mat4 view = poses[0].view;
-				//view = view * origin;
-				//scene->render(context, *program, view, proj, t_sec);
+				GL::Mat4 view = poses[0].view;
+				view = view * origin;
+				scene->render(context, *program, view, proj, t_sec);
 			}
 			else {
 				if(worldState){

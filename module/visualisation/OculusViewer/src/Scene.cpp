@@ -1,21 +1,20 @@
 
 #include "Scene.h"
-
+#include <cmath>
 
 namespace module {
 namespace visualisation {
 
     Scene::Scene(){
 
-		monkey = std::make_shared<GameObject>(GL::Mat4().Scale(GL::Vec3(1,1,1)));
-		screen = std::make_shared<GameObject>();
+		monkey = std::make_shared<GameObject>();
+		screen = std::make_shared<GameObject>(GL::Mat4().Translate(GL::Vec3(1,0,0)).RotateZ(-M_PI_2).RotateY(-M_PI_2));
 		try {
 			monkey->addMesh(std::make_shared<RenderMesh>("../../../assets/monkey.obj", "../../../assets/monkey_texture2.png"));
 			screen->addMesh(std::make_shared<RenderMesh>("../../../assets/screen.obj", "../../../assets/monkey_texture2.png"));
 		} catch (GL::FileException e) {
 			std::cout << __FUNCTION__ << " Line: " << __LINE__ << "\nFile exception when loading meshes!" << std::endl;
 		}
-
 		rootObject.addChild(screen);
 		rootObject.addChild(monkey);
     }
@@ -42,7 +41,7 @@ namespace visualisation {
 		screen->meshes[0]->texture.Image2D(image.data.data(), GL::DataType::UnsignedByte, GL::Format::Red, rWidth, rHeight, GL::InternalFormat::Red);
 		screen->meshes[0]->texFormat = image.format;
 		screen->meshes[0]->texWidth = image.width;
-		screen->meshes[0]->texWidth = image.height;
+		screen->meshes[0]->texHeight = image.height;
 
 		screen->meshes[0]->texture.SetWrapping(GL::Wrapping::ClampEdge);
 		screen->meshes[0]->texture.SetFilters(GL::Filter::Nearest, GL::Filter::Nearest);
