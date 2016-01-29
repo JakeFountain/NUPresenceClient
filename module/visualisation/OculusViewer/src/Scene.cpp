@@ -10,10 +10,10 @@ namespace visualisation {
 		monkey = std::make_shared<GameObject>(GL::Mat4().Scale(GL::Vec3(1,1,1)));
 		screen = std::make_shared<GameObject>();
 		try {
-			monkey->addMesh(std::make_shared<RenderMesh>("../../../assets/monkey.obj", "../../assets/monkey_texture2.png"));
-			screen->addMesh(std::make_shared<RenderMesh>("../../../assets/screen.obj", "../../assets/monkey_texture2.png"));
+			monkey->addMesh(std::make_shared<RenderMesh>("../../../assets/monkey.obj", "../../../assets/monkey_texture2.png"));
+			screen->addMesh(std::make_shared<RenderMesh>("../../../assets/screen.obj", "../../../assets/monkey_texture2.png"));
 		} catch (GL::FileException e) {
-			std::cout << "File exception! " << std::endl;
+			std::cout << __FUNCTION__ << " Line: " << __LINE__ << "\nFile exception when loading meshes!" << std::endl;
 		}
 
 		rootObject.addChild(screen);
@@ -36,7 +36,7 @@ namespace visualisation {
     void Scene::setRobotImage(const WorldState::Image& image){
 
     	//TODO: change this to work with other image formats
-		int rWidth = image.width * 2;
+		int rWidth = image.width * (screen->meshes[0]->texFormat == WorldState::Image::Format::YCBCR_422 ? 2 : 1);
 		int rHeight = image.height;
 
 		screen->meshes[0]->texture.Image2D(image.data.data(), GL::DataType::UnsignedByte, GL::Format::Red, rWidth, rHeight, GL::InternalFormat::Red);

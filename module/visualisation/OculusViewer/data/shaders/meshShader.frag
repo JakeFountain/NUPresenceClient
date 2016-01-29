@@ -68,5 +68,5 @@ void main() {
 	} else {
 		outColor = texture(tex, vec2(Texcoord.x, 1-Texcoord.y));
 	}
-	outColor = vec4(Texcoord,0,1);
+	//outColor = vec4(Texcoord,0,1);
 }

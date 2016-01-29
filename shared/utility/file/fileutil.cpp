@@ -27,18 +27,27 @@
 #include <sstream>
 #include <system_error>
 #include <stack>
+#include <iostream>
 
 namespace utility {
 namespace file {
     std::string loadFromFile(const std::string& path) {
         std::ifstream data(path, std::ios::in);
 
-        // There are a lot of nice ways to read a file into a string but this is one of the quickest.
-        // See: http://stackoverflow.com/a/116228
-        std::stringstream stream;
-        stream << data.rdbuf();
-
-        return stream.str();
+		if (data.is_open()) {
+			// There are a lot of nice ways to read a file into a string but this is one of the quickest.
+			// See: http://stackoverflow.com/a/116228
+			std::stringstream stream;
+			stream << data.rdbuf();
+			return stream.str();
+		}
+		else {
+			std::stringstream stream;
+			stream << "File not found: " << path << std::endl;
+			std::cout << stream.str();
+			throw std::runtime_error(stream.str().c_str());
+		}
+			
     }
 
     bool exists(const std::string& path) {

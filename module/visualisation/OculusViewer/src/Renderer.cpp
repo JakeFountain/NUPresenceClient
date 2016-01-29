@@ -1,6 +1,7 @@
 
 
 #include "Renderer.h"
+#include "utility/file/fileutil.h"
 
 #define GLFW_EXPOSE_NATIVE_WIN32
 #define GLFW_EXPOSE_NATIVE_WGL
@@ -43,12 +44,9 @@ namespace visualisation {
 			try {
 				texToScreenRenderer = std::make_unique<TextureToScreen>();
 
-				vert = std::make_unique<GL::Shader>(GL::ShaderType::Vertex, GLSL(
-				));
+				vert = std::make_unique<GL::Shader>(GL::ShaderType::Vertex, utility::file::loadFromFile("../../shaders/meshShader.vert"));
 
-				frag = std::make_unique<GL::Shader>(GL::ShaderType::Fragment, GLSL(
-				
-				));
+				frag = std::make_unique<GL::Shader>(GL::ShaderType::Fragment, utility::file::loadFromFile("../../shaders/meshShader.frag"));
 
 				program = std::make_unique<GL::Program>(*vert, *frag);
 
