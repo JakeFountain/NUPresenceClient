@@ -20,6 +20,7 @@
 #include "OculusViewer.h"
 
 #include "message/input/proto/ImageFragment.pb.h"
+#include "message/input/proto/PresenceUserState.pb.h"
 
 // #include "extension/Configuration.h"
 
@@ -28,6 +29,7 @@ namespace visualisation {
 
     // using extension::Configuration;
     using message::input::proto::ImageFragment;
+    using message::input::proto::PresenceUserState;
 
     OculusViewer::OculusViewer(std::unique_ptr<NUClear::Environment> environment)
     : Reactor(std::move(environment)) {
@@ -67,10 +69,11 @@ namespace visualisation {
 
 		//Main render loop
 		on<Always, Optional<With<WorldState>>>().then([this] (const std::shared_ptr<const WorldState> worldState) {
-
+			//TODO: get head pose!!
 			auto now = NUClear::clock::now();
+			Transform3D userState;
 			float time_elapsed_seconds = std::chrono::duration_cast<std::chrono::microseconds>(now - start).count() / 1e6;
-			if (!renderer.render(time_elapsed_seconds, worldState)) {
+			if (!renderer.render(time_elapsed_seconds, worldState, userState)) {
 				powerplant.shutdown();
 			}
 		});
