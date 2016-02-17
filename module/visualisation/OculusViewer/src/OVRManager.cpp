@@ -102,6 +102,25 @@ namespace visualisation {
 		}
 	}
 
+	GL::Mat4 OVRManager::getRawHeadPose(){
+		// Get eye poses, feeding in correct IPD offset
+		ovrVector3f ViewOffset[2] = {0,0};
+
+        ovrPosef                  EyeRenderPose[2];
+
+        //TODO: documentation of this method suggests  incrementing the second argument (currently 0)
+        double           ftiming = ovr_GetPredictedDisplayTime(session, 0);
+        // Keeping sensorSampleTime as close to ovr_GetTrackingState as possible - fed into the layer
+        // double           sensorSampleTime = ovr_GetTimeInSeconds();
+        ovrTrackingState hmdState = ovr_GetTrackingState(session, ftiming, ovrTrue);
+        auto M = OVR::Matrix4f(hmdState.HeadPose.ThePose.Orientation);
+        M = OVR::Matrix4f::TranslationMatrix(hmdState.HeadPose.ThePose.Position) * M;
+
+        GL::Mat4 glview;
+		memcpy(&(glview.m), &(M.M), 16 * sizeof(float));
+		return glview.Transpose();
+	}
+
 	std::vector<EyePose> OVRManager::getCurrentPoses(){
 		std::vector<EyePose> eyePoses;
 		if(riftPresent){
@@ -115,7 +134,7 @@ namespace visualisation {
 
 	        double           ftiming = ovr_GetPredictedDisplayTime(session, 0);
 	        // Keeping sensorSampleTime as close to ovr_GetTrackingState as possible - fed into the layer
-	        double           sensorSampleTime = ovr_GetTimeInSeconds();
+	        // double           sensorSampleTime = ovr_GetTimeInSeconds();
 	        ovrTrackingState hmdState = ovr_GetTrackingState(session, ftiming, ovrTrue);
 	        ovr_CalcEyePoses(hmdState.HeadPose.ThePose, ViewOffset, EyeRenderPose);
 
