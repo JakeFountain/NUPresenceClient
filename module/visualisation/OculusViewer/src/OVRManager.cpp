@@ -103,11 +103,6 @@ namespace visualisation {
 	}
 
 	GL::Mat4 OVRManager::getRawHeadPose(){
-		// Get eye poses, feeding in correct IPD offset
-		ovrVector3f ViewOffset[2] = {0,0};
-
-        ovrPosef                  EyeRenderPose[2];
-
         //TODO: documentation of this method suggests  incrementing the second argument (currently 0)
         double           ftiming = ovr_GetPredictedDisplayTime(session, 0);
         // Keeping sensorSampleTime as close to ovr_GetTrackingState as possible - fed into the layer
@@ -132,6 +127,7 @@ namespace visualisation {
 
 	        ovrPosef                  EyeRenderPose[2];
 
+        	//TODO: documentation of this method suggests  incrementing the second argument (currently 0)
 	        double           ftiming = ovr_GetPredictedDisplayTime(session, 0);
 	        // Keeping sensorSampleTime as close to ovr_GetTrackingState as possible - fed into the layer
 	        // double           sensorSampleTime = ovr_GetTimeInSeconds();
