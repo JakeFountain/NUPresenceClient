@@ -33,6 +33,7 @@ namespace visualisation {
 
 		bool init();
 
+		GL::Mat4 getRawHeadPose();
 		std::vector<EyePose> getCurrentPoses();
 		bool renderToRift();
 		ovrSizei getResolution();

@@ -18,7 +18,7 @@ namespace visualisation {
 	}
 
 	    
-	bool Renderer::render(float t_sec, const std::shared_ptr<const WorldState> worldState){
+	bool Renderer::render(float t_sec, const std::shared_ptr<const WorldState> worldState, GL::Mat4& userState){
 		
 		if(!window){
 			width = 1920 ;
@@ -90,7 +90,7 @@ namespace visualisation {
 			}
 
 			
-			if(poses.size() > 0){
+			if(!poses.empty()){
 				//Draw to rift
 				bool renderResult = ovrManager.renderToRift();
 				if (!renderResult) {
@@ -106,7 +106,7 @@ namespace visualisation {
 			GL::Mat4 proj = GL::Mat4::Perspective(1.0, width / float(height), 0.01, 100);
 			proj = proj.Scale(GL::Vec3(1, -1, 1));
 
-			if (poses.size() > 0) {
+			if (!poses.empty()) {
 				//TODO:fix mirroring
 				//GLuint eyeTex = ovrManager.getLastEyeTexture();
 				//texToScreenRenderer->renderTextureToScreen(context, eyeTex);
@@ -116,8 +116,8 @@ namespace visualisation {
 				//	texToScreenRenderer->renderTextureToScreen(context, scene->getRobotEyeTexture(), worldState->latestImage.format, worldState->latestImage.width, worldState->latestImage.height);
 				//}
 				//For now re-render
-				GL::Mat4 view = poses[0].view;
-				view = view * origin;
+				userState = ovrManager.getRawHeadPose();
+				GL::Mat4 view = userState * origin;
 				scene->render(context, *program, view, proj, t_sec);
 			}
 			else {

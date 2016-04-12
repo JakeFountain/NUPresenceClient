@@ -71,10 +71,35 @@ namespace visualisation {
 		on<Always, Optional<With<WorldState>>>().then([this] (const std::shared_ptr<const WorldState> worldState) {
 			//TODO: get head pose!!
 			auto now = NUClear::clock::now();
-			Transform3D userState;
 			float time_elapsed_seconds = std::chrono::duration_cast<std::chrono::microseconds>(now - start).count() / 1e6;
+			GL::Mat4 userState;
+			//TODO: rearchitect so oculus manager is not inside renderer
 			if (!renderer.render(time_elapsed_seconds, worldState, userState)) {
 				powerplant.shutdown();
+			} else {
+				//Emit current head pose
+				auto state = std::make_unique<PresenceUserState>();
+				state->mutable_head_pose()->mutable_x()->x(userState.m[0]);
+				state->mutable_head_pose()->mutable_x()->y(userState.m[1]);
+				state->mutable_head_pose()->mutable_x()->z(userState.m[2]);
+				state->mutable_head_pose()->mutable_x()->t(userState.m[3]);
+
+				state->mutable_head_pose()->mutable_y()->x(userState.m[4]);
+				state->mutable_head_pose()->mutable_y()->y(userState.m[5]);
+				state->mutable_head_pose()->mutable_y()->z(userState.m[6]);
+				state->mutable_head_pose()->mutable_y()->t(userState.m[7]);
+
+				state->mutable_head_pose()->mutable_z()->x(userState.m[8]);
+				state->mutable_head_pose()->mutable_z()->y(userState.m[9]);
+				state->mutable_head_pose()->mutable_z()->z(userState.m[10]);
+				state->mutable_head_pose()->mutable_z()->t(userState.m[11]);
+
+				state->mutable_head_pose()->mutable_t()->x(userState.m[12]);
+				state->mutable_head_pose()->mutable_t()->y(userState.m[13]);
+				state->mutable_head_pose()->mutable_t()->z(userState.m[14]);
+				state->mutable_head_pose()->mutable_t()->t(userState.m[15]);
+
+				emit<Network>(state);
 			}
 		});
 
