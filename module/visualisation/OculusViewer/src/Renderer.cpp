@@ -63,8 +63,10 @@ namespace visualisation {
 
 		}
 
+		GL::Mat4 rawHeadPose = ovrManager.getRawHeadPose();
+
 		if(worldState){
-			scene->setRobotImage(worldState->latestImage);
+			scene->setRobotImage(worldState->latestImage, rawHeadPose todo inerse);
 		}
 
 		GL::Context context = GL::Context::UseExistingContext();
@@ -116,7 +118,7 @@ namespace visualisation {
 				//	texToScreenRenderer->renderTextureToScreen(context, scene->getRobotEyeTexture(), worldState->latestImage.format, worldState->latestImage.width, worldState->latestImage.height);
 				//}
 				//For now re-render
-				userState = ovrManager.getRawHeadPose();
+				userState = rawHeadPose;
 				GL::Mat4 view = userState * origin;
 				scene->render(context, *program, view, proj, t_sec);
 			}

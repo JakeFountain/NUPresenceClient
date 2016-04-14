@@ -19,6 +19,7 @@ namespace visualisation {
 		std::vector<std::shared_ptr<GameObject>> children;
 		std::vector<std::shared_ptr<RenderMesh>> meshes;
 		// std::vector<Light> lights;
+		//transform maps from object space to world space
 		GL::Mat4 transform;
 
 		GameObject(GL::Mat4 t = GL::Mat4()) : transform(t){};	

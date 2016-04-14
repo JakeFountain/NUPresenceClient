@@ -32,7 +32,7 @@ namespace visualisation {
 
     }
 
-    void Scene::setRobotImage(const WorldState::Image& image){
+    void Scene::setRobotImage(const WorldState::Image& image, const GL::Mat4& head_pose){
 
     	//TODO: change this to work with other image formats
 		int rWidth = image.width * (screen->meshes[0]->texFormat == WorldState::Image::Format::YCBCR_422 ? 2 : 1);
@@ -42,6 +42,8 @@ namespace visualisation {
 		screen->meshes[0]->texFormat = image.format;
 		screen->meshes[0]->texWidth = image.width;
 		screen->meshes[0]->texHeight = image.height;
+
+		screen->transform = head_pose;
 
 		screen->meshes[0]->texture.SetWrapping(GL::Wrapping::ClampEdge);
 		screen->meshes[0]->texture.SetFilters(GL::Filter::Nearest, GL::Filter::Nearest);
