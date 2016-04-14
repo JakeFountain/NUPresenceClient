@@ -2,6 +2,7 @@
 
 #include "Renderer.h"
 #include "utility/file/fileutil.h"
+#include "utility/math/Conversion.h"
 
 #define GLFW_EXPOSE_NATIVE_WIN32
 #define GLFW_EXPOSE_NATIVE_WGL
@@ -63,16 +64,19 @@ namespace visualisation {
 
 		}
 
-		GL::Mat4 rawHeadPose = ovrManager.getRawHeadPose();
+		auto origin = GL::Mat4();// ::LookAt(GL::Vec3(0, 0, 0), GL::Vec3(1, 0, 0), GL::Vec3(0, 0, 1));
+		GL::Mat4 rawHeadPose = ovrManager.getRawHeadPose() * origin;
 
 		if(worldState){
-			scene->setRobotImage(worldState->latestImage, rawHeadPose todo inerse);
+			scene->setRobotImage(worldState->latestImage, rawHeadPose.Inverse());
+		}
+		else {
+			scene->setRobotImagePose(rawHeadPose.Inverse());
 		}
 
 		GL::Context context = GL::Context::UseExistingContext();
 		if (!glfwWindowShouldClose(window.get()))
 	    {
-			auto origin = GL::Mat4::LookAt(GL::Vec3(0, 0, 0), GL::Vec3(1, 0, 0), GL::Vec3(0, 0, 1));
 			auto poses = ovrManager.getCurrentPoses();
 			
 			//Draw eye buffers
@@ -118,9 +122,7 @@ namespace visualisation {
 				//	texToScreenRenderer->renderTextureToScreen(context, scene->getRobotEyeTexture(), worldState->latestImage.format, worldState->latestImage.width, worldState->latestImage.height);
 				//}
 				//For now re-render
-				userState = rawHeadPose;
-				GL::Mat4 view = userState * origin;
-				scene->render(context, *program, view, proj, t_sec);
+				scene->render(context, *program, rawHeadPose, proj, t_sec);
 			}
 			else {
 				if(worldState){

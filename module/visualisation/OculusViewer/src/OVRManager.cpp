@@ -1,6 +1,7 @@
 
 
 #include "OVRManager.h"
+#include "utility/math/Conversion.h"
 #include <algorithm>
 
 namespace module {
@@ -112,7 +113,7 @@ namespace visualisation {
         M = OVR::Matrix4f::Translation(hmdState.HeadPose.ThePose.Position) * M;
 		M = M.InvertedHomogeneousTransform();
 
-        GL::Mat4 glview;
+		GL::Mat4 glview;
 		memcpy(&(glview.m), &(M.M), 16 * sizeof(float));
 		return glview.Transpose();
 	}

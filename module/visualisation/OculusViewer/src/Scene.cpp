@@ -8,14 +8,19 @@ namespace visualisation {
     Scene::Scene(){
 
 		monkey = std::make_shared<GameObject>();
-		screen = std::make_shared<GameObject>(GL::Mat4().Translate(GL::Vec3(1,0,0)).RotateZ(-M_PI_2).RotateY(-M_PI_2));
+		screen_parent = std::make_shared<GameObject>();
+		screen = std::make_shared<GameObject>(GL::Mat4().Translate(GL::Vec3(0, 0, -1)).RotateX(M_PI_2).RotateY(M_PI_2));
+		auto static_screen = std::make_shared<GameObject>(GL::Mat4().Translate(GL::Vec3(0,0,-1)).RotateX(M_PI_2).RotateY(M_PI_2));
 		try {
 			monkey->addMesh(std::make_shared<RenderMesh>("../../../assets/monkey.obj", "../../../assets/monkey_texture2.png"));
-			screen->addMesh(std::make_shared<RenderMesh>("../../../assets/screen.obj", "../../../assets/monkey_texture2.png"));
+			screen->addMesh(std::make_shared<RenderMesh>("../../../assets/screen.obj", "../../../assets/landscape.jpg"));
+			static_screen->addMesh(std::make_shared<RenderMesh>("../../../assets/screen.obj", "../../../assets/landscape.jpg"));
 		} catch (GL::FileException e) {
 			std::cout << __FUNCTION__ << " Line: " << __LINE__ << "\nFile exception when loading meshes!" << std::endl;
 		}
-		rootObject.addChild(screen);
+		screen_parent->addChild(screen);
+		rootObject.addChild(screen_parent);
+		rootObject.addChild(static_screen);
 		rootObject.addChild(monkey);
     }
 
@@ -43,12 +48,16 @@ namespace visualisation {
 		screen->meshes[0]->texWidth = image.width;
 		screen->meshes[0]->texHeight = image.height;
 
-		screen->transform = head_pose;
+		screen_parent->transform = head_pose;
 
 		screen->meshes[0]->texture.SetWrapping(GL::Wrapping::ClampEdge);
 		screen->meshes[0]->texture.SetFilters(GL::Filter::Nearest, GL::Filter::Nearest);
 
     }
+
+	void Scene::setRobotImagePose(const GL::Mat4& head_pose) {
+		screen_parent->transform = head_pose;
+	}
 
 	GLuint Scene::getRobotEyeTexture() {
 		return screen->meshes[0]->texture;
