@@ -109,7 +109,8 @@ namespace visualisation {
         // double           sensorSampleTime = ovr_GetTimeInSeconds();
         ovrTrackingState hmdState = ovr_GetTrackingState(session, ftiming, ovrTrue);
         auto M = OVR::Matrix4f(hmdState.HeadPose.ThePose.Orientation);
-        M = OVR::Matrix4f::TranslationMatrix(hmdState.HeadPose.ThePose.Position) * M;
+        M = OVR::Matrix4f::Translation(hmdState.HeadPose.ThePose.Position) * M;
+		M = M.InvertedHomogeneousTransform();
 
         GL::Mat4 glview;
 		memcpy(&(glview.m), &(M.M), 16 * sizeof(float));

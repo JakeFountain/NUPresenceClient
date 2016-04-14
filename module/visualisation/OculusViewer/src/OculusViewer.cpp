@@ -79,27 +79,27 @@ namespace visualisation {
 			} else {
 				//Emit current head pose
 				auto state = std::make_unique<PresenceUserState>();
-				state->mutable_head_pose()->mutable_x()->x(userState.m[0]);
-				state->mutable_head_pose()->mutable_x()->y(userState.m[1]);
-				state->mutable_head_pose()->mutable_x()->z(userState.m[2]);
-				state->mutable_head_pose()->mutable_x()->t(userState.m[3]);
+				state->mutable_head_pose()->mutable_x()->set_x(userState.m[0]);
+				state->mutable_head_pose()->mutable_x()->set_y(userState.m[1]);
+				state->mutable_head_pose()->mutable_x()->set_z(userState.m[2]);
+				state->mutable_head_pose()->mutable_x()->set_t(userState.m[3]);
 
-				state->mutable_head_pose()->mutable_y()->x(userState.m[4]);
-				state->mutable_head_pose()->mutable_y()->y(userState.m[5]);
-				state->mutable_head_pose()->mutable_y()->z(userState.m[6]);
-				state->mutable_head_pose()->mutable_y()->t(userState.m[7]);
+				state->mutable_head_pose()->mutable_y()->set_x(userState.m[4]);
+				state->mutable_head_pose()->mutable_y()->set_y(userState.m[5]);
+				state->mutable_head_pose()->mutable_y()->set_z(userState.m[6]);
+				state->mutable_head_pose()->mutable_y()->set_t(userState.m[7]);
 
-				state->mutable_head_pose()->mutable_z()->x(userState.m[8]);
-				state->mutable_head_pose()->mutable_z()->y(userState.m[9]);
-				state->mutable_head_pose()->mutable_z()->z(userState.m[10]);
-				state->mutable_head_pose()->mutable_z()->t(userState.m[11]);
+				state->mutable_head_pose()->mutable_z()->set_x(userState.m[8]);
+				state->mutable_head_pose()->mutable_z()->set_y(userState.m[9]);
+				state->mutable_head_pose()->mutable_z()->set_z(userState.m[10]);
+				state->mutable_head_pose()->mutable_z()->set_t(userState.m[11]);
 
-				state->mutable_head_pose()->mutable_t()->x(userState.m[12]);
-				state->mutable_head_pose()->mutable_t()->y(userState.m[13]);
-				state->mutable_head_pose()->mutable_t()->z(userState.m[14]);
-				state->mutable_head_pose()->mutable_t()->t(userState.m[15]);
+				state->mutable_head_pose()->mutable_t()->set_x(userState.m[12]);
+				state->mutable_head_pose()->mutable_t()->set_y(userState.m[13]);
+				state->mutable_head_pose()->mutable_t()->set_z(userState.m[14]);
+				state->mutable_head_pose()->mutable_t()->set_t(userState.m[15]);
 
-				emit<Network>(state);
+				emit<Scope::NETWORK>(state);
 			}
 		});
 
