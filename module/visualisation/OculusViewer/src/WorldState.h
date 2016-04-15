@@ -19,6 +19,8 @@ namespace module {
 			};
 
 			Image latestImage;
+
+			GL::Mat4 cam_to_feet;
 		};
 
 	}

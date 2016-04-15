@@ -63,7 +63,27 @@ namespace visualisation {
 			worldState->latestImage.data.resize(fragment.data().size());
 			worldState->latestImage.format = WorldState::Image::Format::YCBCR_422;
 			std::memcpy(worldState->latestImage.data.data(), fragment.data().data(), fragment.data().size());
+			
+			worldState->cam_to_feet.m[0] = fragment->cam_to_feet().x().x();
+			worldState->cam_to_feet.m[1] = fragment->cam_to_feet().x().y();
+			worldState->cam_to_feet.m[2] = fragment->cam_to_feet().x().z();
+			worldState->cam_to_feet.m[3] = fragment->cam_to_feet().x().t();
 
+			worldState->cam_to_feet.m[4] = fragment->cam_to_feet().y().x();
+			worldState->cam_to_feet.m[5] = fragment->cam_to_feet().y().y();
+			worldState->cam_to_feet.m[6] = fragment->cam_to_feet().y().z();
+			worldState->cam_to_feet.m[7] = fragment->cam_to_feet().y().t();
+
+			worldState->cam_to_feet.m[8] = fragment->cam_to_feet().z().x();
+			worldState->cam_to_feet.m[9] = fragment->cam_to_feet().z().y();
+			worldState->cam_to_feet.m[10] = fragment->cam_to_feet().z().z();
+			worldState->cam_to_feet.m[11] = fragment->cam_to_feet().z().t();
+
+			worldState->cam_to_feet.m[12] = fragment->cam_to_feet().t().x();
+			worldState->cam_to_feet.m[13] = fragment->cam_to_feet().t().y();
+			worldState->cam_to_feet.m[14] = fragment->cam_to_feet().t().z();
+			worldState->cam_to_feet.m[15] = fragment->cam_to_feet().t().t();
+			
 			emit(worldState);
 		});
 
