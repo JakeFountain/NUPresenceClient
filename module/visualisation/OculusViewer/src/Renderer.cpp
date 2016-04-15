@@ -68,7 +68,7 @@ namespace visualisation {
 		GL::Mat4 rawHeadPose = ovrManager.getRawHeadPose() * origin;
 
 		if(worldState){
-			scene->setRobotImage(worldState->latestImage, rawHeadPose.Inverse());
+			scene->setRobotImage(worldState->latestImage, worldState->cam_to_feet);
 		}
 		else {
 			scene->setRobotImagePose(rawHeadPose.Inverse());
