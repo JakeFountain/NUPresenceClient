@@ -9,8 +9,8 @@ namespace visualisation {
 
 		monkey = std::make_shared<GameObject>();
 		screen_parent = std::make_shared<GameObject>();
-		screen = std::make_shared<GameObject>(GL::Mat4().Translate(GL::Vec3(0, 0, -1)).RotateX(M_PI_2).RotateY(M_PI_2));
-		auto static_screen = std::make_shared<GameObject>(GL::Mat4().Translate(GL::Vec3(0,0,-1)).RotateX(M_PI_2).RotateY(M_PI_2));
+		screen = std::make_shared<GameObject>(GL::Mat4().Translate(GL::Vec3(0, 0, -1)).RotateX(M_PI_2).RotateY(M_PI_2).Scale(GL::Vec3(1,1,-1)));
+		auto static_screen = std::make_shared<GameObject>(GL::Mat4().Translate(GL::Vec3(0,0,-3)).RotateX(M_PI_2).RotateY(M_PI_2));
 		try {
 			monkey->addMesh(std::make_shared<RenderMesh>("../../../assets/monkey.obj", "../../../assets/monkey_texture2.png"));
 			screen->addMesh(std::make_shared<RenderMesh>("../../../assets/screen.obj", "../../../assets/landscape.jpg"));

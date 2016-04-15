@@ -65,7 +65,9 @@ namespace visualisation {
 		}
 
 		auto origin = GL::Mat4();// ::LookAt(GL::Vec3(0, 0, 0), GL::Vec3(1, 0, 0), GL::Vec3(0, 0, 1));
-		GL::Mat4 rawHeadPose = ovrManager.getRawHeadPose() * origin;
+		userState = ovrManager.getRawHeadPose();
+		GL::Mat4 rawHeadPose = userState * origin;
+
 
 		if(worldState){
 			scene->setRobotImage(worldState->latestImage, worldState->cam_to_feet);
