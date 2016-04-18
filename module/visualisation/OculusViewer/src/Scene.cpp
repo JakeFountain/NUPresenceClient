@@ -6,10 +6,17 @@ namespace module {
 namespace visualisation {
 
     Scene::Scene(){
+    	
+    	float FOVX = 1.0472;
+    	float FOVY = 0.785389;
+    	float screenDistance = 0.5;
+
+    	float scaleX = screenDistance * std::tan(FOVX / 2);
+    	float scaleY = screenDistance * std::tan(FOVY / 2);
 
 		monkey = std::make_shared<GameObject>();
 		screen_parent = std::make_shared<GameObject>();
-		screen = std::make_shared<GameObject>(GL::Mat4().Translate(GL::Vec3(0, 0, -1)).RotateX(M_PI_2).RotateY(M_PI_2).Scale(GL::Vec3(1,1,-1)));
+		screen = std::make_shared<GameObject>(GL::Mat4().Translate(GL::Vec3(0, 0, -screenDistance)).RotateX(M_PI_2).RotateY(M_PI_2).Scale(GL::Vec3(scaleY,1,-scaleX)));
 		auto static_screen = std::make_shared<GameObject>(GL::Mat4().Translate(GL::Vec3(0,0,-3)).RotateX(M_PI_2).RotateY(M_PI_2));
 		try {
 			monkey->addMesh(std::make_shared<RenderMesh>("../../../assets/monkey.obj", "../../../assets/monkey_texture2.png"));

@@ -46,6 +46,10 @@ namespace visualisation {
 
 		on<Trigger<NUClear::message::NetworkJoin>>().then([this](const NUClear::message::NetworkJoin& join) {
 			std::cout << "Connected to " << join.name << std::endl;
+			//reset center position
+			if(join.name.compare("robot1") <= 1 || join.name.compare("nubotsvm") == 0){
+				recenter = true;
+			}
 		});
 
 		on<Trigger<NUClear::message::NetworkLeave>>().then([this](const NUClear::message::NetworkLeave& leave) {
@@ -93,6 +97,10 @@ namespace visualisation {
 			auto now = NUClear::clock::now();
 			float time_elapsed_seconds = std::chrono::duration_cast<std::chrono::microseconds>(now - start).count() / 1e6;
 			GL::Mat4 userState;
+			if(recenter){
+				renderer.recenter();
+				recenter = false;
+			}
 			//TODO: rearchitect so oculus manager is not inside renderer
 			if (!renderer.render(time_elapsed_seconds, worldState, userState)) {
 				powerplant.shutdown();

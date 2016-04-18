@@ -11,7 +11,7 @@ namespace visualisation {
 
 	bool OVRManager::init(){
 		riftPresent = true;
-	   
+		
 	   	//Init OVR
 	    ovrResult initResult = ovr_Initialize(nullptr);
 		if (!OVR_SUCCESS(initResult)) {
@@ -48,6 +48,14 @@ namespace visualisation {
 		
 		return eyeBufferResult;
 
+	}
+
+	void OVRManager::recenter() {
+		ovrSessionStatus status;
+		if (OVR_SUCCESS(ovr_GetSessionStatus(session, &status)) 
+			&& status.HmdPresent) {
+			ovr_RecenterPose(session);
+		}
 	}
 
 	ovrSizei OVRManager::getResolution(){

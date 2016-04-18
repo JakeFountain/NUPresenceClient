@@ -29,7 +29,7 @@ namespace module {
 namespace visualisation {
 
     class OculusViewer : public NUClear::Reactor {
-
+    	bool recenter = false;
 	public:
 
 		//Y0 B0 Y1 R0 Y2 B1 Y3 R1

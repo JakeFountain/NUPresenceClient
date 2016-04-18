@@ -20,6 +20,7 @@ namespace visualisation {
 	class Renderer {
 	public:
 	    Renderer();
+		void recenter();
 	    bool render(float t_sec, const std::shared_ptr<const WorldState> worldState, GL::Mat4& userState);
 	private:
 		//std::unique_ptr<GL::Window> window;

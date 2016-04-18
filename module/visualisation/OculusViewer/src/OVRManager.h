@@ -33,6 +33,8 @@ namespace visualisation {
 
 		bool init();
 
+		void recenter();
+
 		GL::Mat4 getRawHeadPose();
 		std::vector<EyePose> getCurrentPoses();
 		bool renderToRift();

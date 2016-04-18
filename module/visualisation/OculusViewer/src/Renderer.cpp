@@ -18,6 +18,10 @@ namespace visualisation {
 	{
 	}
 
+	void Renderer::recenter(){
+		ovrManager.recenter();
+	}
+
 	    
 	bool Renderer::render(float t_sec, const std::shared_ptr<const WorldState> worldState, GL::Mat4& userState){
 		
