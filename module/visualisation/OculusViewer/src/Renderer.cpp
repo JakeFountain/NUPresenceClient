@@ -115,7 +115,7 @@ namespace visualisation {
 			context.BindFramebuffer(); //Bind to screen
 			context.Clear();
 
-			GL::Mat4 proj = GL::Mat4::Perspective(1.0, width / float(height), 0.01, 100);
+			GL::Mat4 proj = GL::Mat4::Perspective(1.0, width / float(height), 0.01, 300);
 			proj = proj.Scale(GL::Vec3(1, -1, 1));
 
 			if (!poses.empty()) {

@@ -155,7 +155,7 @@ namespace visualisation {
 				OVR::Vector3f eyePos = EyeRenderPose[eye].Position;
 
 				OVR::Matrix4f view = OVR::Matrix4f::LookAtRH(eyePos, eyePos + finalForward, finalUp);
-				OVR::Matrix4f proj = ovrMatrix4f_Projection(hmdDesc.DefaultEyeFov[eye], 0.01f, 100.0f, ovrProjection_RightHanded);
+				OVR::Matrix4f proj = ovrMatrix4f_Projection(hmdDesc.DefaultEyeFov[eye], 0.01f, 300.0f, ovrProjection_RightHanded);
 
 
 				GL::Mat4 glview;

@@ -28,6 +28,7 @@ namespace visualisation {
 		texFormat = WorldState::Image::Format::OTHER;
 		texWidth = image.GetWidth();
 		texHeight = image.GetHeight();
+		texture.SetWrapping(GL::Wrapping::Repeat, GL::Wrapping::Repeat);
 	}
 
 
