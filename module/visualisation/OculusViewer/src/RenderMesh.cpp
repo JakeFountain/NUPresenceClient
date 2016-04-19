@@ -31,9 +31,24 @@ namespace visualisation {
 		texture.SetWrapping(GL::Wrapping::Repeat, GL::Wrapping::Repeat);
 	}
 
+	RenderMesh::RenderMesh(std::string modelName) : 
+		vao(),
+		image(),
+		texture(),
+		mesh(modelName),
+		vBuffer( mesh, GL::BufferUsage::StaticDraw, [] ( const GL::Vertex& v, GL::VertexDataBuffer& data )
+		{
+			data.Vec3( v.Pos );
+			data.Vec3( v.Normal );
+			data.Vec2( v.Tex );
+		} )
+	{
+		texFormat = WorldState::Image::Format::OTHER;
+		texture.SetWrapping(GL::Wrapping::Repeat, GL::Wrapping::Repeat);
+	}
 
 	void RenderMesh::render(GL::Context& gl, GL::Mat4 modelview, GL::Mat4 projection, GL::Program& shader) {
-		glEnable(GL_DEPTH_TEST);
+		// glEnable(GL_DEPTH_TEST);
 		vao.BindAttribute(shader.GetAttribute( "pos" ), vBuffer, GL::Type::Float, 3, sizeof(float) * 8, 0 );
 		//vao.BindAttribute(shader.GetAttribute( "normal" ), vBuffer, GL::Type::Float, 3, sizeof(float) * 8, sizeof(float) * 3 );
 		vao.BindAttribute(shader.GetAttribute( "texcoord" ), vBuffer, GL::Type::Float, 2, sizeof(float) * 8, sizeof(float) * 6 );

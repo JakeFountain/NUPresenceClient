@@ -12,6 +12,7 @@ namespace visualisation {
 	public:
 		RenderMesh::RenderMesh(const RenderMesh& m);
 	    RenderMesh(std::string modelName, std::string textureName);
+	    RenderMesh(std::string modelName);
 	    void render(GL::Context& gl, GL::Mat4 modelview, GL::Mat4 projection, GL::Program& shader);
 		GL::Mesh mesh;
 		GL::Image image;

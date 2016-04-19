@@ -23,12 +23,23 @@ namespace visualisation {
 
 		GLuint getRobotEyeTexture();
 
+		void addScreen();
+
 	private:
 		GameObject rootObject;
 
+		std::vector<std::shared_ptr<GameObject>> screens;
+		int max_screens = 100;
+		int current_screen = 0;
+		int screen_count = 0;
+		float FOVX = 1.0472;
+    	float FOVY = 0.785389;
+    	float screenDistance = 100;
+
+
 		std::shared_ptr<GameObject> head_box;
-		std::shared_ptr<GameObject> screen;
-		std::shared_ptr<GameObject> screen_parent;
+		// std::shared_ptr<GameObject> screen;
+		// std::shared_ptr<GameObject> screen_parent;
 	};
 
 }
