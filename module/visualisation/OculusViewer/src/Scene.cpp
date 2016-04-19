@@ -40,7 +40,7 @@ namespace visualisation {
 		//rootObject.addChild(static_screen);
 		//rootObject.addChild(skybox);
 		//rootObject.addChild(ground);
-		rootObject.addChild(head_box);
+		// rootObject.addChild(head_box);
     }
 
     void Scene::render(GL::Context& glContext, GL::Program& shaderProgram, GL::Mat4 view, GL::Mat4 projection, float t){
