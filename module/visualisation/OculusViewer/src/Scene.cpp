@@ -67,7 +67,6 @@ namespace visualisation {
     }
 
     void Scene::setRobotImage(const WorldState::Image& image, const GL::Mat4& head_pose){
-    	current_screen = (current_screen + 1) % max_screens;
     	//TODO: change this to work with other image formats
 		int rWidth = image.width * (screens.back()->children[0]->meshes[0]->texFormat == WorldState::Image::Format::YCBCR_422 ? 2 : 1);
 		int rHeight = image.height;
@@ -82,8 +81,12 @@ namespace visualisation {
 		screens[current_screen]->children[0]->meshes[0]->texture.SetWrapping(GL::Wrapping::ClampEdge);
 		screens[current_screen]->children[0]->meshes[0]->texture.SetFilters(GL::Filter::Nearest, GL::Filter::Nearest);
 
-		screen_count = max(screen_count, max_screens);
 
+    }
+
+    void Scene::addScreen(){
+    	current_screen = (current_screen + 1) % max_screens;
+		screen_count = max(screen_count, max_screens);
     }
 
 	void Scene::setRobotImagePose(const GL::Mat4& head_pose) {

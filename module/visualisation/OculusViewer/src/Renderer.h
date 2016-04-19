@@ -22,6 +22,7 @@ namespace visualisation {
 	    Renderer();
 		void recenter();
 	    bool render(float t_sec, const std::shared_ptr<const WorldState> worldState, GL::Mat4& userState);
+	    void setScreenAngleThreshold(float t){cosCamAngleThreshold = t;}
 	private:
 		//std::unique_ptr<GL::Window> window;
 		std::unique_ptr<GLFWwindow,std::function<void(GLFWwindow*)>> window;
@@ -38,7 +39,8 @@ namespace visualisation {
 		std::unique_ptr<GL::Shader> frag;
 		std::unique_ptr<GL::Program> program;
 		
-
+		GL::Vec3 cam_x;
+		float cosCamAngleThreshold = 0.5;
 	};
 
 }
