@@ -56,7 +56,7 @@ namespace visualisation {
 
 		glContext.Disable(GL::Capability::DepthTest);
 	    int screens_rendered = 0;
-	    int i = current_screen;
+	    int i = (current_screen + (max_screens - screen_count + 1)) % max_screens;
 		while (screens_rendered < screen_count) {
 			screens[i]->render(glContext, GL::Mat4(), view, projection, shaderProgram);
 			i = (i + 1) % max_screens;
