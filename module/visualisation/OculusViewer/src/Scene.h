@@ -26,7 +26,7 @@ namespace visualisation {
 	private:
 		GameObject rootObject;
 
-		std::shared_ptr<GameObject> monkey;
+		std::shared_ptr<GameObject> head_box;
 		std::shared_ptr<GameObject> screen;
 		std::shared_ptr<GameObject> screen_parent;
 	};

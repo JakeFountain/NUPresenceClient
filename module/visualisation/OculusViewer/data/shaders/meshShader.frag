@@ -67,5 +67,8 @@ void main() {
 		outColor = YCbCrToRGB(textureYCbCr422(tex, vec2(Texcoord.x, 1-Texcoord.y)));
 	} else {
 		outColor = texture(tex, vec2(Texcoord.x, 1-Texcoord.y));
+		if(outColor.w < 0.5){
+			discard;
+		}
 	}
 }

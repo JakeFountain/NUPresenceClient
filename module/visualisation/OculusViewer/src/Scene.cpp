@@ -14,14 +14,15 @@ namespace visualisation {
     	float scaleX = screenDistance * std::tan(FOVX / 2);
     	float scaleY = screenDistance * std::tan(FOVY / 2);
 
-		monkey = std::make_shared<GameObject>();
+    	float head_box_size = 0.1;
+		head_box = std::make_shared<GameObject>(GL::Mat4().Scale(GL::Vec3(head_box_size,head_box_size,head_box_size)));
 		screen_parent = std::make_shared<GameObject>();
 		screen = std::make_shared<GameObject>(GL::Mat4().Translate(GL::Vec3(0, 0, -screenDistance)).RotateX(M_PI_2).RotateY(M_PI_2).Scale(GL::Vec3(scaleY,1,-scaleX)));
 		auto static_screen = std::make_shared<GameObject>(GL::Mat4().Translate(GL::Vec3(0,0,-3)).RotateX(M_PI_2).RotateY(M_PI_2));
 		auto ground = std::make_shared<GameObject>(GL::Mat4().Translate(GL::Vec3(0,-1.5,0)).Scale(GL::Vec3(100,100,100)));
 		auto skybox = std::make_shared<GameObject>(GL::Mat4().RotateX(-M_PI_2).Scale(GL::Vec3(100,100,100)));
 		try {
-			monkey->addMesh(std::make_shared<RenderMesh>("../../../assets/monkey.obj", "../../../assets/monkey_texture2.png"));
+			head_box->addMesh(std::make_shared<RenderMesh>("../../../assets/unit_cube.obj", "../../../assets/cube_edges.png"));
 			screen->addMesh(std::make_shared<RenderMesh>("../../../assets/screen.obj", "../../../assets/landscape.jpg"));
 			static_screen->addMesh(std::make_shared<RenderMesh>("../../../assets/screen.obj", "../../../assets/landscape.jpg"));
 			ground->addMesh(std::make_shared<RenderMesh>("../../../assets/ground.obj", "../../../assets/panels.jpg"));
@@ -34,7 +35,7 @@ namespace visualisation {
 		//rootObject.addChild(static_screen);
 		rootObject.addChild(skybox);
 		rootObject.addChild(ground);
-		rootObject.addChild(monkey);
+		rootObject.addChild(head_box);
     }
 
     void Scene::render(GL::Context& glContext, GL::Program& shaderProgram, GL::Mat4 view, GL::Mat4 projection, float t){
@@ -42,7 +43,7 @@ namespace visualisation {
 		float camera_period = 10;
 		float sin = std::sin(2 * 3.14 * t / camera_period);
 		float cos = std::cos(2 * 3.14 * t / camera_period);
-		monkey->transform = GL::Mat4::LookAt(GL::Vec3(0, 0, 0), GL::Vec3(sin, cos, 0), GL::Vec3(0, 0, 1));
+		//head_box->transform = GL::Mat4::LookAt(GL::Vec3(0, 0, 0), GL::Vec3(sin, cos, 0), GL::Vec3(0, 0, 1));
 
     	glContext.UseProgram(shaderProgram);
 	    rootObject.render(glContext, GL::Mat4(), view, projection, shaderProgram);

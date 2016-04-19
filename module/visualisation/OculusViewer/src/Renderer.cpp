@@ -77,7 +77,7 @@ namespace visualisation {
 			scene->setRobotImage(worldState->latestImage, worldState->cam_to_feet);
 		}
 		else {
-			scene->setRobotImagePose(rawHeadPose.Inverse());
+			// scene->setRobotImagePose(rawHeadPose.Inverse());
 		}
 
 		GL::Context context = GL::Context::UseExistingContext();
