@@ -65,7 +65,7 @@ namespace visualisation {
 				throw e;
 			}
 
-
+			recenter();
 		}
 
 		auto origin = GL::Mat4();// ::LookAt(GL::Vec3(0, 0, 0), GL::Vec3(1, 0, 0), GL::Vec3(0, 0, 1));
