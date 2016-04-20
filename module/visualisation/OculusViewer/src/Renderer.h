@@ -39,8 +39,8 @@ namespace visualisation {
 		std::unique_ptr<GL::Shader> frag;
 		std::unique_ptr<GL::Program> program;
 		
-		GL::Vec3 cam_x;
-		float cosCamAngleThreshold = 0.5;
+		GL::Vec3 last_look;
+		float cosCamAngleThreshold = 0.85;
 	};
 
 }

@@ -29,7 +29,7 @@ namespace visualisation {
 		GameObject rootObject;
 
 		std::vector<std::shared_ptr<GameObject>> screens;
-		int max_screens = 100;
+		int max_screens = 50;
 		int current_screen = 0;
 		int screen_count = 0;
 		float FOVX = 1.0472;

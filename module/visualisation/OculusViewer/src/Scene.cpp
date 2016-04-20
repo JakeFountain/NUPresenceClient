@@ -86,7 +86,7 @@ namespace visualisation {
 
     void Scene::addScreen(){
     	current_screen = (current_screen + 1) % max_screens;
-		screen_count = max(screen_count, max_screens);
+		screen_count = min(screen_count+1, max_screens);
     }
 
 	void Scene::setRobotImagePose(const GL::Mat4& head_pose) {

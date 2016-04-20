@@ -43,7 +43,7 @@ namespace visualisation {
 			data.Vec2( v.Tex );
 		} )
 	{
-		texFormat = WorldState::Image::Format::OTHER;
+		texFormat = WorldState::Image::Format::YCBCR_422;
 		texture.SetWrapping(GL::Wrapping::Repeat, GL::Wrapping::Repeat);
 	}
 

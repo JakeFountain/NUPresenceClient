@@ -74,11 +74,11 @@ namespace visualisation {
 
 
 		if(worldState){
-			GL::Vec3 x = GL::Vec3(worldState->cam_to_feet.m[0],worldState->cam_to_feet.m[1],worldState->cam_to_feet.m[2]);
-			float cosAngle = cam_x[0] * x[0] + cam_x[1] * x[1] + cam_x[2] * x[2]; //Dot product of x vectors
+			GL::Vec3 look = GL::Vec3(worldState->cam_to_feet.m[8],worldState->cam_to_feet.m[9],worldState->cam_to_feet.m[10]);
+			float cosAngle = last_look.Dot(look); //Dot product of x vectors
 			if(cosAngle < cosCamAngleThreshold){ //Cos is decreasing for theta in [0,pi], so cosA < cosB iff A > B
 				scene->addScreen();
-				cam_x = x;
+				last_look = look;
 			}
 			scene->setRobotImage(worldState->latestImage, worldState->cam_to_feet);
 		}
