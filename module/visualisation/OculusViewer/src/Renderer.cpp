@@ -103,7 +103,7 @@ namespace visualisation {
 					glClearColor(0, 0, 0, 1);
 
 				}
-				scene->render(context, *program, view, pose.proj, t_sec);
+				scene->render(context, *program, view, pose.proj, t_sec + 0.0 * eyeNumber);
 				eyeNumber++;
 			}
 

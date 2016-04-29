@@ -34,7 +34,7 @@ namespace visualisation {
 		int screen_count = 0;
 		float FOVX = 1.0472;
     	float FOVY = 0.785389;
-    	float screenDistance = 100;
+    	float screenDistance = 1;
 
 
 		std::shared_ptr<GameObject> head_box;
