@@ -55,7 +55,7 @@ namespace visualisation {
 	 	ovrPosef EyeRenderPose[2];
 		OVR::Sizei bufferSize;
 
-	 	ovrSwapTextureSet* pTextureSet;
+		ovrTextureSwapChain pTextureSet;
 		int lastEyeTextureIndex;
 
 		std::vector<std::unique_ptr<GL::Framebuffer>> eyeBuffer;

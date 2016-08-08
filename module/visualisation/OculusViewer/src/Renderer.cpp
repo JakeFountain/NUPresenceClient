@@ -26,8 +26,8 @@ namespace visualisation {
 	bool Renderer::render(float t_sec, const std::shared_ptr<const WorldState> worldState, GL::Mat4& userState){
 		
 		if(!window){
-			width = 1920 ;
-			height = 1080;
+			width = 2560;
+			height = 1440;
 
 			glfwSetErrorCallback([](int, const char* msg) {
 				std::cout << msg << std::endl;

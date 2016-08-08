@@ -40,8 +40,9 @@ namespace visualisation {
 		EyeRenderDesc[0] = ovr_GetRenderDesc(session, ovrEye_Left, hmdDesc.DefaultEyeFov[0]);
 		EyeRenderDesc[1] = ovr_GetRenderDesc(session, ovrEye_Right, hmdDesc.DefaultEyeFov[1]);
 
-		ViewOffset[2] = { EyeRenderDesc[0].HmdToEyeViewOffset.y,
-						  EyeRenderDesc[1].HmdToEyeViewOffset.y };
+		ViewOffset[2] = { EyeRenderDesc[0].HmdToEyeOffset.y,
+						  EyeRenderDesc[1].HmdToEyeOffset.y };
+	
 
 		// Turn off vsync to let the compositor do its magic
 		wglSwapIntervalEXT(0);
@@ -54,7 +55,7 @@ namespace visualisation {
 		ovrSessionStatus status;
 		if (OVR_SUCCESS(ovr_GetSessionStatus(session, &status)) 
 			&& status.HmdPresent) {
-			ovr_RecenterPose(session);
+			ovr_RecenterTrackingOrigin(session);
 		}
 	}
 
@@ -79,21 +80,39 @@ namespace visualisation {
 
 		bufferSize.w = recommenedTex0Size.w + recommenedTex1Size.w;
 		bufferSize.h = max(recommenedTex0Size.h, recommenedTex1Size.h);
+		
+		ovrTextureSwapChainDesc swapChainDesc;
+		swapChainDesc.Type = ovrTextureType::ovrTexture_2D;
+		swapChainDesc.Format = OVR_FORMAT_R8G8B8A8_UNORM_SRGB;//GL_SRGB8_ALPHA8;
+		swapChainDesc.ArraySize = 1;
+		swapChainDesc.Width = bufferSize.w;
+		swapChainDesc.Height = bufferSize.h;
+		swapChainDesc.MipLevels = 1;
+		swapChainDesc.SampleCount = 1;
+		swapChainDesc.StaticImage = ovrFalse;
+		swapChainDesc.MiscFlags = 0;
+		swapChainDesc.BindFlags = 0;
 
-
-		if (ovr_CreateSwapTextureSetGL(session, GL_SRGB8_ALPHA8, bufferSize.w, bufferSize.h,
+		if (ovr_CreateTextureSwapChainGL(session, &swapChainDesc,
 			&pTextureSet) != ovrSuccess)
 		{
 			std::cout << "OVR SWAP TEXTURE ALLOCATION FAILED" << std::endl;
+			ovrErrorInfo err;
+			ovr_GetLastErrorInfo(&err);
+			std::cout << "ERROR INFO: " << err.ErrorString << " " << err.Result << std::endl;
 			return false;
 		}
 		else {
 			std::cout << "OVR SWAP TEXTURE ALLOCATION SUCCEEDED" << std::endl;
 		}
 
-		for (int i = 0; i < pTextureSet->TextureCount; i++) {
-			ovrGLTexture* tex = (ovrGLTexture*)&pTextureSet->Textures[i];
-			GLuint id = tex->OGL.TexId;
+		int numBuffs = 0;
+		ovr_GetTextureSwapChainLength(session, pTextureSet, &numBuffs);
+
+		for (int i = 0; i < numBuffs; i++) {
+			//ovrGLTexture* tex = (ovrGLTexture*)&pTextureSet->Textures[i];
+			GLuint id;
+			ovr_GetTextureSwapChainBufferGL(session, pTextureSet, i, &id);
 			eyeBuffer.push_back(std::make_unique<GL::Framebuffer>(bufferSize.w, bufferSize.h, &id));
 		}
 		
@@ -106,7 +125,9 @@ namespace visualisation {
 
 		}
 		else {
-			gl.BindFramebuffer(*eyeBuffer[pTextureSet->CurrentIndex]);
+			int currentIndex;
+			ovr_GetTextureSwapChainCurrentIndex(session, pTextureSet, &currentIndex);
+			gl.BindFramebuffer(*eyeBuffer[currentIndex]);
 			glViewport(bufferSize.w * int(target) / 2, 0, bufferSize.w / 2, bufferSize.h);
 		}
 	}
@@ -132,8 +153,8 @@ namespace visualisation {
 			//Struct to emit
 	       	
 	       	// Get eye poses, feeding in correct IPD offset
-			ViewOffset[0] = EyeRenderDesc[0].HmdToEyeViewOffset;
-			ViewOffset[1] = EyeRenderDesc[1].HmdToEyeViewOffset;
+			ViewOffset[0] = EyeRenderDesc[0].HmdToEyeOffset;
+			ViewOffset[1] = EyeRenderDesc[1].HmdToEyeOffset;
 
 	        ovrPosef                  EyeRenderPose[2];
 
@@ -155,7 +176,7 @@ namespace visualisation {
 				OVR::Vector3f eyePos = EyeRenderPose[eye].Position;
 
 				OVR::Matrix4f view = OVR::Matrix4f::LookAtRH(eyePos, eyePos + finalForward, finalUp);
-				OVR::Matrix4f proj = ovrMatrix4f_Projection(hmdDesc.DefaultEyeFov[eye], 0.01f, 300.0f, ovrProjection_RightHanded);
+				OVR::Matrix4f proj = ovrMatrix4f_Projection(hmdDesc.DefaultEyeFov[eye], 0.01f, 300.0f, ovrProjectionModifier::ovrProjection_None);
 
 
 				GL::Mat4 glview;
@@ -198,12 +219,21 @@ namespace visualisation {
 		// Set up positional data.
 		ovrViewScaleDesc viewScaleDesc;
 		viewScaleDesc.HmdSpaceToWorldScaleInMeters = 1.0f;
-		viewScaleDesc.HmdToEyeViewOffset[0] = ViewOffset[0];
-		viewScaleDesc.HmdToEyeViewOffset[1] = ViewOffset[1];
+		viewScaleDesc.HmdToEyeOffset[0] = ViewOffset[0];
+		viewScaleDesc.HmdToEyeOffset[1] = ViewOffset[1];
 
+		ovr_CommitTextureSwapChain(session, pTextureSet);
 		ovrResult result = ovr_SubmitFrame(session, 0, &viewScaleDesc, &layerList, 1);
-		lastEyeTextureIndex = pTextureSet->CurrentIndex;
-		pTextureSet->CurrentIndex = (pTextureSet->CurrentIndex + 1) % pTextureSet->TextureCount;
+		ovr_GetTextureSwapChainCurrentIndex(session, pTextureSet, &lastEyeTextureIndex);
+		//TODO: how to increment the current index?
+		//pTextureSet->CurrentIndex = (pTextureSet->CurrentIndex + 1) % pTextureSet->TextureCount;
+
+		if (result != ovrSuccess) {
+			ovrErrorInfo err;
+			ovr_GetLastErrorInfo(&err);
+			std::cout << "Submit frame failed! - ";
+			std::cout << "ERROR INFO: " << err.ErrorString << " " << err.Result << std::endl;
+		}
 
 		return result == ovrSuccess;
 	}
@@ -214,6 +244,7 @@ namespace visualisation {
 	}
 	   
 	OVRManager::~OVRManager(){
+		ovr_DestroyTextureSwapChain(session, pTextureSet);
 	    ovr_Destroy(session);
 		ovr_Shutdown();
 		delete pTextureSet;
